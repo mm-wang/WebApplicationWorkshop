@@ -6,8 +6,8 @@ const eslint = require("gulp-eslint");
 const concat = require("gulp-concat");
 const plumber = require("gulp-plumber");
 const notify = require('gulp-notify');
+const minify = require("gulp-minify");
 
-// const minify = require("gulp-minify");
 // const stripJsComments = require("gulp-strip-comments");
 // const removeEmptyLines = require("gulp-remove-empty-lines");
 // const stripCssComments = require("gulp-strip-css-comments");
@@ -17,6 +17,7 @@ const notify = require('gulp-notify');
 
 const rollup = require("rollup");
 const vueplugin = require('rollup-plugin-vue');
+const uglify = require("rollup-plugin-uglify")
 // const commonjs = require('rollup-plugin-commonjs');
 const cleanup = require('rollup-plugin-cleanup');
 const babel = require('rollup-plugin-babel');
@@ -26,7 +27,7 @@ let esLintRules = {
     "no-use-before-define": 0
 };
 
-let esLintJs ={
+let esLintJs = {
     parser: "babel-eslint",
     rules: esLintRules,
     globals: [
@@ -43,6 +44,8 @@ let paths = {
 let rollupOpts = {
     es6Folder: "browser/es6/**/*.js",
     entry: "./browser/es6/main.js",
+    // external: [],
+    // extensions: ['.js', '.json', '.html'],
     output: {
         format: "umd",
         name: "main",
@@ -57,6 +60,7 @@ let rollupOpts = {
             ]
         }),
         vueplugin(),
+        uglify.uglify(),
         cleanup()
     ],
     sourceMap: true
@@ -102,7 +106,11 @@ function prepJsBrowserSrc() {
 
 function prepJsRollup() {
     return gulp.src(rollupOpts.es6Folder)
-        .pipe(concat("es6_bundle.js"))
+        // .pipe(concat(rollupOpts.output.name + ".temp.js"))
+        .pipe(minify({
+            mangle: false,
+            ext: ".min.js"
+        }))
         .pipe(gulp.dest("./public"))
 }
 
@@ -111,11 +119,8 @@ async function jsRollup() {
         input: rollupOpts.entry,
         plugins: rollupOpts.plugins
     });
-    // await bundle.write(rollupOpts.output);
-    await bundle.generate({
-        format: "umd",
-        name: "myBundle"
-    });
+    await bundle.generate(rollupOpts.output);
+    await bundle.write(rollupOpts.output);
 }
 
 function runRollup(done) {
@@ -162,7 +167,7 @@ function lintServerJs() {
 /*
  Sequences
  */
-const build = gulp.parallel(gulp.series(lintServerJs, lintBrowserJs, prepJsBrowserSrc, prepJsRollup, runRollup), prepSass);
+const build = gulp.parallel(gulp.series(lintServerJs, lintBrowserJs, prepJsBrowserSrc, prepJsRollup, jsRollup), prepSass);
 build.description = "Lint javascript and concat, while also running sass";
 
 const watchSass = () => gulp.watch(paths.sass, gulp.series(prepSass, reload))
@@ -173,7 +178,7 @@ watchBrowserJs.description = "Watch the javascript sources, reload";
 const buildWatch = gulp.series(build, gulp.parallel(watchBrowserJs, watchSass));
 buildWatch.description = "Default task: building and watching series";
 
-const buildRollup = gulp.series(prepJsRollup, runRollup);
+const buildRollup = gulp.series(prepJsRollup, jsRollup);
 
 module.exports = {
     default: buildWatch,

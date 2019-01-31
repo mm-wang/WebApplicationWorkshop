@@ -1,3 +1,3 @@
-(function(){
-    console.log("hello world!");
-});
+const hello = console.log("hello world!");
+
+export default hello;
