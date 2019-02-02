@@ -1,8 +1,8 @@
-import * as test from "components/utilities.js";
+import consoleTest from "./components/utilities.js";
 const hello = {
     hello: function(){
         console.log("hello world!");
-        test.test();
+        consoleTest();
     }
 }
 hello.hello();

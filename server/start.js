@@ -7,7 +7,7 @@ const chalk = require("chalk");
 
 const express = require("express");
 const http = require("http");
-// const path = require("path");
+const path = require("path");
 
 require('rootpath')();
 
@@ -22,6 +22,10 @@ console.log(chalk.yellow("Environment variables loaded"));
 //Create application for use
 const app = express();
 const port = process.env.PORT || 1234;
+
+var serverRoot = path.join(__dirname, '.');
+app.root = serverRoot;
+console.log("app root: ", app.root);
 
 //Configure application
 require("./app/_app")(app, port);
