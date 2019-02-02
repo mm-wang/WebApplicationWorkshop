@@ -25,13 +25,11 @@ const port = process.env.PORT || 1234;
 
 var serverRoot = path.join(__dirname, '.');
 app.root = serverRoot;
-console.log("app root: ", app.root);
 
 //Configure application
 require("./app/_app")(app, port);
 const router = require("./app/routes/_routes");
 app.use('/', router);
-
 
 //Configure the server
 const server = http.createServer(app);
