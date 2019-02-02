@@ -129,13 +129,6 @@ async function jsRollup() {
     return written;
 }
 
-function runRollup(done) {
-    // jsRollup().then((output) => {
-    //     console.log("output of rollup? ", rollup);
-    //     done();
-    // });
-}
-
 function lintBrowserJs() {
     function onError(err) {
         notify.onError({
