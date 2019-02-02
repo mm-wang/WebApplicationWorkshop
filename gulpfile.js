@@ -8,17 +8,10 @@ const plumber = require("gulp-plumber");
 const notify = require('gulp-notify');
 const minify = require("gulp-minify");
 
-// const stripJsComments = require("gulp-strip-comments");
-// const removeEmptyLines = require("gulp-remove-empty-lines");
-// const stripCssComments = require("gulp-strip-css-comments");
-// const insert = require("gulp-insert");
-// const stripDebug = require('gulp-strip-debug');
-// const rename = require("gulp-rename");
-
 const rollup = require("rollup");
 const vueplugin = require('rollup-plugin-vue');
 const uglify = require("rollup-plugin-uglify")
-// const commonjs = require('rollup-plugin-commonjs');
+const commonjs = require('rollup-plugin-commonjs');
 const cleanup = require('rollup-plugin-cleanup');
 const babel = require('rollup-plugin-babel');
 
@@ -44,8 +37,6 @@ let paths = {
 let rollupOpts = {
     es6Folder: "browser/es6/**/*.js",
     entry: "./browser/es6/main.js",
-    // external: [],
-    // extensions: ['.js', '.json', '.html'],
     output: {
         format: "umd",
         name: "main",
@@ -53,6 +44,7 @@ let rollupOpts = {
         indent: "  "
     },
     plugins: [
+        commonjs(),
         babel({
             exclude: 'node_modules/**',
             "presets": [
@@ -60,7 +52,7 @@ let rollupOpts = {
             ]
         }),
         vueplugin(),
-        uglify.uglify(),
+        // uglify.uglify(),
         cleanup()
     ],
     sourceMap: true
@@ -106,7 +98,6 @@ function prepJsBrowserSrc() {
 
 function prepJsRollup() {
     return gulp.src(rollupOpts.es6Folder)
-        // .pipe(concat(rollupOpts.output.name + ".temp.js"))
         .pipe(minify({
             mangle: false,
             ext: ".min.js"

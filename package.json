@@ -2,7 +2,7 @@
   "name": "webapplicationworkshop",
   "version": "0.0.1",
   "description": "Web application workshop framework",
-  "main": "start.js",
+  "main": "server/start.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon --watch server -e js,html app.js"
