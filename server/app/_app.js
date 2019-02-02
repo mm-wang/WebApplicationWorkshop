@@ -6,7 +6,9 @@ const session = require('express-session');
 
 module.exports = function(app, port) {
 	//Static directories
-	app.use(express.static(path.join(__dirname, '..', '..', 'public')));
+	app.use(express.static(path.join(app.root, '../public')));
+    app.use(express.static(path.join(app.root, '../node_modules/jquery')));
+    app.use(express.static(path.join(app.root, '../node_modules/bootstrap')));
 
 	//Middleware to parse requests
 	app.use(bodyParser.json());
