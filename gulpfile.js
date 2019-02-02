@@ -1,3 +1,4 @@
+const path = require("path");
 const gulp = require("gulp");
 const sass = require("gulp-sass");
 const sourcemaps = require("gulp-sourcemaps");
@@ -10,7 +11,6 @@ const minify = require("gulp-minify");
 
 const rollup = require("rollup");
 const vueplugin = require('rollup-plugin-vue');
-const uglify = require("rollup-plugin-uglify")
 const commonjs = require('rollup-plugin-commonjs');
 const cleanup = require('rollup-plugin-cleanup');
 const babel = require('rollup-plugin-babel');
@@ -28,15 +28,17 @@ let esLintJs = {
     ]
 };
 
+let baseDir = path.join(process.cwd(), "./");
+console.log("base directory: ", baseDir);
 let paths = {
-    browser: ["./browser/**/*.js"],
-    sass: ["./browser/**/*.scss"],
-    server: ["./server/**/*.js"]
+    browser: [baseDir + "browser/**/*.js"],
+    sass: [baseDir + "browser/css/*.scss"],
+    server: [baseDir + "server/**/*.js"]
 }
 
 let rollupOpts = {
-    es6Folder: "browser/es6/**/*.js",
-    entry: "./browser/es6/main.js",
+    es6Folder: baseDir + "browser/es6/**/*.js",
+    input: baseDir + "browser/es6/main.js",
     output: {
         format: "umd",
         name: "main",
@@ -44,19 +46,31 @@ let rollupOpts = {
         indent: "  "
     },
     plugins: [
-        commonjs(),
-        babel({
-            exclude: 'node_modules/**',
-            "presets": [
-                ["@babel/preset-env"]
+        commonjs({
+            include: [
+                'node_modules/**'
             ]
         }),
         vueplugin(),
-        // uglify.uglify(),
-        cleanup()
+        cleanup(),
+        babel({
+            exclude: 'node_modules/**',
+            presets: [
+                ["@babel/preset-env", {
+                    modules: false
+                }]
+            ],
+            plugins: [
+                '@babel/plugin-external-helpers'
+            ],
+            runtimeHelpers: true,
+            externalHelpers: true
+        })
     ],
     sourceMap: true
 };
+
+// console.log(rollupOpts);
 
 /*
  Browser Sync
@@ -107,18 +121,19 @@ function prepJsRollup() {
 
 async function jsRollup() {
     const bundle = await rollup.rollup({
-        input: rollupOpts.entry,
+        input: rollupOpts.input,
         plugins: rollupOpts.plugins
     });
-    await bundle.generate(rollupOpts.output);
-    await bundle.write(rollupOpts.output);
+    let generated = await bundle.generate(rollupOpts.output);
+    let written = await bundle.write(rollupOpts.output);
+    return written;
 }
 
 function runRollup(done) {
-    jsRollup().then((output) => {
-        console.log("output of rollup? ", rollup);
-        done();
-    });
+    // jsRollup().then((output) => {
+    //     console.log("output of rollup? ", rollup);
+    //     done();
+    // });
 }
 
 function lintBrowserJs() {
@@ -163,7 +178,7 @@ build.description = "Lint javascript and concat, while also running sass";
 
 const watchSass = () => gulp.watch(paths.sass, gulp.series(prepSass, reload))
 watchSass.description = "Watch the sass sources, reload";
-const watchBrowserJs = () => gulp.watch(paths.browser, gulp.series(lintBrowserJs, prepJsBrowserSrc, reload))
+const watchBrowserJs = () => gulp.watch(paths.browser, gulp.series(lintBrowserJs, prepJsBrowserSrc, prepJsRollup, jsRollup, reload))
 watchBrowserJs.description = "Watch the javascript sources, reload";
 
 const buildWatch = gulp.series(build, gulp.parallel(watchBrowserJs, watchSass));

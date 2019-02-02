@@ -9,6 +9,8 @@ module.exports = function(app, port) {
 	app.use(express.static(path.join(app.root, '../public')));
     app.use(express.static(path.join(app.root, '../node_modules/jquery')));
     app.use(express.static(path.join(app.root, '../node_modules/bootstrap')));
+	app.use(express.static(path.join(app.root, '../node_modules/vue')));
+	app.use(express.static(path.join(app.root, '../node_modules/vue-router')));
 
 	//Middleware to parse requests
 	app.use(bodyParser.json());
