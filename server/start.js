@@ -21,7 +21,6 @@ console.log(chalk.yellow("Environment variables loaded"));
 const port = process.env.PORT || 1234;
 
 let connectDb;
-if (typeof(process.env.DATABASE_URI) !== "undefined") connectDb = require("./db/_db");
 
 //Create application
 let createApp = () => {
@@ -57,5 +56,8 @@ let startServer = (app) => {
         else console.log(chalk.red("SERVER ERROR: ", err));
     });
 }
-if (typeof(process.env.DATABASE_URI) !== "undefined") connectDb.then(createApp).then(startServer);
+if (typeof(process.env.DATABASE_URI) !== "undefined") {
+    connectDb = require("./db/_db");
+    connectDb.then(createApp).then(startServer);
+}
 else createApp().then(startServer);
