@@ -107,16 +107,7 @@ function prepJsBrowserSrc() {
         .pipe(sourcemaps.init())
         .pipe(concat("main.js"))
         .pipe(sourcemaps.write())
-        .pipe(gulp.dest("./public"))
-}
-
-function prepJsRollup() {
-    return gulp.src(rollupOpts.es6Folder)
-        .pipe(minify({
-            mangle: false,
-            ext: ".min.js"
-        }))
-        .pipe(gulp.dest("./public"))
+        .pipe(gulp.dest("./public"));
 }
 
 async function jsRollup() {
@@ -166,18 +157,18 @@ function lintServerJs() {
 /*
  Sequences
  */
-const build = gulp.parallel(gulp.series(lintServerJs, lintBrowserJs, prepJsBrowserSrc, prepJsRollup, jsRollup), prepSass);
+const build = gulp.parallel(gulp.series(lintServerJs, lintBrowserJs, prepJsBrowserSrc, jsRollup), prepSass);
 build.description = "Lint javascript and concat, while also running sass";
 
 const watchSass = () => gulp.watch(paths.sass, gulp.series(prepSass, reload))
 watchSass.description = "Watch the sass sources, reload";
-const watchBrowserJs = () => gulp.watch(paths.browser, gulp.series(lintBrowserJs, prepJsBrowserSrc, prepJsRollup, jsRollup, reload))
+const watchBrowserJs = () => gulp.watch(paths.browser, gulp.series(lintBrowserJs, prepJsBrowserSrc, jsRollup, reload))
 watchBrowserJs.description = "Watch the javascript sources, reload";
 
 const buildWatch = gulp.series(build, gulp.parallel(watchBrowserJs, watchSass));
 buildWatch.description = "Default task: building and watching series";
 
-const buildRollup = gulp.series(prepJsRollup, jsRollup);
+const buildRollup = gulp.series(jsRollup);
 
 module.exports = {
     default: buildWatch,
