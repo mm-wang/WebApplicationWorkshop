@@ -1,6 +1,6 @@
 <template>
 <div>
-    <!-- <appNavbar/> -->
+    <appNavbar/>
     <div class="container-fluid content-container">
         <div class="row">
             <div class="col">
@@ -9,10 +9,15 @@
             </div>
         </div>
     </div>
-    <!-- <appFooter /> -->
+    <appFooter />
 </div>
 </template>
 
 <script>
-export default {}
+import appNavbar from "../../components/appNavbar.vue";
+export default {
+    components: {
+        appNavbar: appNavbar
+    }
+}
 </script>
