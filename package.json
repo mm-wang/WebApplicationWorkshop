@@ -46,6 +46,7 @@
     "@babel/preset-env": "^7.3.1",
     "babel-eslint": "^10.0.1",
     "browser-sync": "^2.26.3",
+    "eslint-plugin-vue": "^5.1.0",
     "gulp": "^4.0.0",
     "gulp-babel": "^8.0.0",
     "gulp-concat": "^2.6.1",
