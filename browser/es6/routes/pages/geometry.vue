@@ -1,7 +1,9 @@
 <template>
+<div class="row">
     <div class="col">
-        <h1>Geometry Test</h1>
+        <h3>Geometry Component</h3>
     </div>
+</div>
 </template>
 
 <script>

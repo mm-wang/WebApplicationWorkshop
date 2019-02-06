@@ -1,7 +1,21 @@
 $primary: #7711aa;
 $secondary: #88cc44;
 
+$footer-height: 42px;
+$logo-height: $footer-height/3;
+
 @import "../../node_modules/bootstrap/scss/bootstrap";
+
+.sticky-bottom {
+    position: absolute;
+    bottom: 0;
+    height: auto;
+    line-height: $footer-height;
+}
+
+.logo {
+    height: $logo-height;
+}
 
 h2 {
     color: $secondary;

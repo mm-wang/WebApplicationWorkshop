@@ -4,8 +4,7 @@ const router = new VueRouter({
   mode: 'history',
   routes: routes
 });
-
-console.log(router);
+// console.log(router);
 
 router.beforeEach((to, from, next) => {
   if(to.meta && to.meta.title) {
@@ -17,4 +16,4 @@ router.beforeEach((to, from, next) => {
 const app = new Vue({
   router
 }).$mount('#app');
-console.log(app);
+// console.log(app);
