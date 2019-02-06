@@ -11,7 +11,7 @@
 </template>
 <script>
 import moment from "moment";
-
+// console.log("THIS IS A TESTING THING");
 export default {
     filters: {
         year: function(date) {
