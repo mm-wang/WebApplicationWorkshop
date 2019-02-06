@@ -1,6 +1,6 @@
 <template>
 <nav class="navbar sticky-top navbar-dark bg-dark">
-    <a class="navbar-brand" href="/">Your App!
+    <a class="navbar-brand" href="/">Your App!</a>
 </nav>
 </template>
 <script>
