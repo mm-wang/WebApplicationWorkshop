@@ -39,26 +39,24 @@ let esLintJs = {
 	]
 };
 
-// let baseDir = path.join(process.cwd(), ".\/");
-let baseDir = process.cwd() + "\/";
 let paths = {
 	browser: ["./browser/**/*.js", "./browser/**/*.vue"],
 	sass: ["./browser/css/*.scss"],
 	server: ["./server/**/*.js"],
 	public: ["./public"],
-	rollupFolder: ["./browser/es6/**/*.js"],
-	rollupInput: ["./browser/es6/main.js"],
-	rollupOutput: ["./public/main.js"],
+	rollupFolder: "./browser/es6/**/*.js",
+	rollupInput: "./browser/es6/main.js",
+	rollupOutput: "./public/main.js",
 	rollupNodeModules: ['./node_modules/**']
 }
 
 let rollupOpts = {
-	es6Folder: paths.rollupFolder[0], //baseDir + "browser\/es6\/**\/*.js",
-	input: paths.rollupInput[0], //baseDir + "browser\/es6\/main.js",
+	es6Folder: paths.rollupFolder,
+	input: paths.rollupInput,
 	output: {
 		format: "umd",
 		name: "main",
-		file: paths.rollupOutput[0],
+		file: paths.rollupOutput,
 		indent: "  ",
 		sourceMap: "inline"
 	},
@@ -68,9 +66,6 @@ let rollupOpts = {
 			browser: true
 		}),
 		commonjs({
-			// namedExports: {
-			//     // [baseDir + 'node_modules\/moment\/src\/moment.js']: ['moment']
-			// },
 			include: paths.rollupNodeModules
 		}),
 		cleanup(),
@@ -201,27 +196,3 @@ module.exports = {
 	rollup: buildRollup,
 	build: build
 };
-
-
-// let paths = {
-// 	browser: ["browser\/\*\*\/\*.js", "browser\/\*\*\/\*.vue"],
-// 	sass: ["browser\/css\/\*.scss"],
-// 	server: ["server\/\*\*\/\*.js"],
-// 	public: [".\/public"],
-// 	rollupFolder: [baseDir + "browser\/es6\/\*\*\/\*.js"],
-// 	rollupInput: [baseDir + "browser\/es6\/main.js"],
-// 	rollupOutput: [".\/public\/main.js"],
-// 	rollupNodeModules: [baseDir + 'node_modules\/\*\*']
-// }
-
-// function changeSlashes() {
-// 	Object.keys(paths).forEach(function(pathType) {
-// 		if (!Array.isArray(paths[pathType])) paths[pathType] = [paths[pathType]];
-// 		paths[pathType] = paths[pathType].map(function(path) {
-// 			return path.split("\/").join("\\");
-// 		});
-// 	});
-// 	console.log(paths);
-// }
-
-// if (process.platform === "win32") changeSlashes();
