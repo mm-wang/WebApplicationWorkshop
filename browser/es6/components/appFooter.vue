@@ -4,11 +4,19 @@
         <div class="float-right">
             <a href="http://core.thorntontomasetti.com">
                 <img class="logo" src="https://s3-us-west-2.amazonaws.com/core-weblibrary/libraries/core-logo.svg" />
-            </a>&nbsp;&nbsp;&copy; 2019
+            </a>&nbsp;&nbsp;&copy; {{Date.now() | year}}
         </div>
     </div>
 </footer>
 </template>
 <script>
-export default {}
+import moment from "moment";
+
+export default {
+    filters: {
+        year: function(date) {
+            return moment(date).format('YYYY');
+        }
+    }
+}
 </script>

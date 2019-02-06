@@ -12,6 +12,7 @@ const minify = require("gulp-minify");
 const rollup = require("rollup");
 const vueplugin = require('rollup-plugin-vue');
 const commonjs = require('rollup-plugin-commonjs');
+const resolve = require('rollup-plugin-node-resolve');
 const cleanup = require('rollup-plugin-cleanup');
 const babel = require('rollup-plugin-babel');
 
@@ -43,11 +44,12 @@ let baseDir = path.join(process.cwd(), ".\/");
 let paths = {
     browser: [baseDir + "browser\/**\/*.js", baseDir + "browser\/**\/*.vue"],
     sass: [baseDir + "browser\/css\/*.scss"],
-    server: [baseDir + "server\/**\/*.js"]
+    server: [baseDir + "server\/**\/*.js"],
 }
 
 function changeSlashes() {
     Object.keys(paths).forEach(function(pathType) {
+        if (!Array.isArray(paths[pathType])) paths[pathType] = [paths[pathType]];
         paths[pathType].forEach(function(path) {
             console.log("path", path);
             path.replace(/\//g, "\\");
@@ -59,7 +61,6 @@ function changeSlashes() {
 
 if (process.platform === "win32") changeSlashes();
 
-
 let rollupOpts = {
     es6Folder: baseDir + "browser\/es6\/**\/*.js",
     input: baseDir + "browser\/es6\/main.js",
@@ -67,16 +68,22 @@ let rollupOpts = {
         format: "umd",
         name: "main",
         file: ".\/public\/main.js",
-        indent: "  "
+        indent: "  ",
+        sourceMap: "inline"
     },
     plugins: [
-        commonjs({
-            include: [
-                'node_modules\/**'
-            ]
+        resolve({
+            module: true,
+			browser: true
         }),
+        commonjs({
+            // namedExports: {
+            //     // [baseDir + 'node_modules\/moment\/src\/moment.js']: ['moment']
+            // },
+            include: [baseDir + 'node_modules\/**']
+        }),
+		cleanup(),
         vueplugin(),
-        cleanup(),
         babel({
             exclude: 'node_modules/**',
             presets: [
