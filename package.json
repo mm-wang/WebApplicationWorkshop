@@ -4,7 +4,6 @@
   "description": "Web application workshop framework",
   "main": "server/start.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon --watch server -e js,html app.js"
   },
   "repository": {
