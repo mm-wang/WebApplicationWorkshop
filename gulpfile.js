@@ -199,7 +199,7 @@ function lintServerJs() {
 /*
  Sequences
  */
-const build = gulp.parallel(gulp.series(lintServerJs, lintBrowserJs, prepJsBrowserSrc, jsRollup), prepSass/*, prep3dm*/);
+const build = gulp.parallel(gulp.series(lintServerJs, lintBrowserJs, prepJsBrowserSrc, jsRollup), prepSass /*, prep3dm*/ );
 build.description = "Lint javascript and concat, while also running sass";
 
 const watchSass = () => {
