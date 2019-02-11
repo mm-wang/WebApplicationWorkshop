@@ -2,12 +2,11 @@
 <div class="row">
     <div class="col-md-4 order-md-12">
         <h3>Geometry Component</h3>
-        <form id="geo-upload" ref="myGeoForm" enctype="multipart/form-data" novalidate @submit.prevent="clickTest">
+        <form id="geo-upload" ref="myGeoForm" enctype="multipart/form-data" novalidate>
             <div class="custom-file">
                 <label for="geo-file" class="custom-file-label">Upload Geometry</label>
                 <input type="file" id="geo-file" name="geo" class="custom-file-input" ref="myGeoFile" @change="fileUploaded($event.target.files)" />
             </div>
-            <button class="btn btn-block">Submit</button>
         </form>
     </div>
     <div class="col-md-8 order-md-1">
@@ -29,9 +28,6 @@ export default {
         }
     },
     methods: {
-        clickTest() {
-            console.log($("form#geo-upload"));
-        },
         fileUploaded(files) {
             const component = this;
             component.file = component.$refs.myGeoFile.files[0];
@@ -52,24 +48,21 @@ export default {
                 method: 'POST',
                 success: (response) => {
                     console.log("model? ", response);
-                    console.log("file parsed? ", component.parseFile(response.model).then((array) => {
-                        console.log("array? ", array);
-                    }))
                 }
             });
         },
-        parseFile(file) {
-            const component = this;
-            return new Promise(function(resolve, reject) {
-                // Modified from https://stackoverflow.com/questions/32556664/getting-byte-array-through-input-type-file/32556944
-                component.reader.onload = function() {
-                    let arrayBuffer = this.result;
-                    let array = new Uint8Array(arrayBuffer);
-                    resolve(array);
-                }
-                component.reader.readAsArrayBuffer(file);
-            });
-        }
+        // parseFile(file) {
+        //     const component = this;
+        //     return new Promise(function(resolve, reject) {
+        //         // Modified from https://stackoverflow.com/questions/32556664/getting-byte-array-through-input-type-file/32556944
+        //         component.reader.onload = function() {
+        //             let arrayBuffer = this.result;
+        //             let array = new Uint8Array(arrayBuffer);
+        //             resolve(array);
+        //         }
+        //         component.reader.readAsArrayBuffer(file);
+        //     });
+        // }
     },
     created: function created() {
         const component = this;
@@ -81,31 +74,4 @@ export default {
         // processRhino();
     }
 }
-
-
-// function processRhino() {
-//     if (!rhino3dm) return setTimeout(processRhino, 500);
-//     rhino3dm = rhino3dm("rhino3dm")();
-//     console.log("rhino3dm? ", rhino3dm);
-//     rhino3dm.then((module) => {
-//         Module = module;
-//         console.log("module exists now?", Module.File3dm);
-//         loadModel("/3dm/massing_core_2.3dm").then((model) => {
-//             setTimeout(function() {}, 500);
-//             console.log("model here? ", model);
-//         });
-//     });
-// }
-//
-// function loadModel(url) {
-//     return new Promise(function(resolve, reject) {
-//         fetch(url).then((data) => {
-//             data.arrayBuffer().then(buffer => {
-//                 const arr = new Uint8Array(buffer);
-//                 const model = Module && Module.File3dm && Module.File3dm.fromByteArray(arr);
-//                 resolve(model);
-//             });
-//         });
-//     });
-// }
 </script>
