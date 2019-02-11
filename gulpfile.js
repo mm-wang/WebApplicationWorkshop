@@ -40,9 +40,11 @@ let esLintJs = {
 };
 
 let paths = {
-	browser: ["./browser/**/*.js", "./browser/**/*.vue"],
+	browser: ["./browser/**/*.js", "./browser/es6/**/*.js", "./browser/**/*.vue", "./browser/es6/**/*.vue"],
 	sass: ["./browser/css/*.scss"],
 	server: ["./server/**/*.js"],
+	// dependencies: ["./node_modules/three/build/three.min.js","./node_modules/three/examples/js/controls/OrbitControls.js"],
+	// rhino: ["./3dm/**.3dm"],
 	public: ["./public"],
 	rollupFolder: "./browser/es6/**/*.js",
 	rollupInput: "./browser/es6/main.js",
@@ -111,19 +113,40 @@ function serve(done) {
  Tasks
  */
 function prepSass() {
-	return gulp.src(paths.sass, {cwd: process.cwd()})
+	return gulp.src(paths.sass, {
+			cwd: process.cwd()
+		})
 		.pipe(sass())
 		.pipe(concat("style.css"))
 		.pipe(gulp.dest(paths.public[0]))
 }
 
 function prepJsBrowserSrc() {
-	return gulp.src(paths.browser, {cwd: process.cwd()})
+	return gulp.src(paths.browser, {
+			cwd: process.cwd()
+		})
 		.pipe(sourcemaps.init())
 		.pipe(concat("main.js"))
 		.pipe(sourcemaps.write())
 		.pipe(gulp.dest(paths.public[0]));
 }
+
+// function prepJsBrowserDepsSrc() {
+// 	return gulp.src(paths.dependencies, {
+// 			cwd: process.cwd()
+// 		})
+// 		.pipe(sourcemaps.init())
+// 		.pipe(concat("dependencies.js"))
+// 		.pipe(sourcemaps.write())
+// 		.pipe(gulp.dest(paths.public[0]));
+// }
+
+// function prep3dm() {
+// 	return gulp.src(paths.rhino, {
+// 			cwd: process.cwd()
+// 		})
+// 		.pipe(gulp.dest(paths.public[0]+"/3dm"));
+// }
 
 async function jsRollup() {
 	const bundle = await rollup.rollup({
@@ -143,7 +166,9 @@ function lintBrowserJs() {
 		this.emit('end');
 	};
 
-	return gulp.src(paths.browser, {cwd: process.cwd()})
+	return gulp.src(paths.browser, {
+			cwd: process.cwd()
+		})
 		.pipe(plumber({
 			errorHandler: onError
 		}))
@@ -160,7 +185,9 @@ function lintServerJs() {
 		this.emit('end');
 	};
 
-	return gulp.src(paths.server, {cwd: process.cwd()})
+	return gulp.src(paths.server, {
+			cwd: process.cwd()
+		})
 		.pipe(plumber({
 			errorHandler: onError
 		}))
@@ -172,7 +199,7 @@ function lintServerJs() {
 /*
  Sequences
  */
-const build = gulp.parallel(gulp.series(lintServerJs, lintBrowserJs, prepJsBrowserSrc, jsRollup), prepSass);
+const build = gulp.parallel(gulp.series(lintServerJs, lintBrowserJs, prepJsBrowserSrc, jsRollup), prepSass/*, prep3dm*/);
 build.description = "Lint javascript and concat, while also running sass";
 
 const watchSass = () => {

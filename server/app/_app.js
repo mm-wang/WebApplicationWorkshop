@@ -13,6 +13,9 @@ module.exports = function(app, port) {
 	app.use(express.static(path.join(app.root, '../node_modules/vue')));
 	app.use(express.static(path.join(app.root, '../node_modules/vue-router')));
 	app.use(express.static(path.join(app.root, '../node_modules/moment')));
+	app.use(express.static(path.join(app.root, '../node_modules/jquery')));
+	app.use(express.static(path.join(app.root, '../node_modules/three')));
+	app.use(express.static(path.join(app.root, '../node_modules/rhino3dm')));
 
 	//Middleware to parse requests
 	app.use(bodyParser.json());
