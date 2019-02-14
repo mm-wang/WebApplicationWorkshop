@@ -2,7 +2,7 @@
 <div class="row">
   <div id="three-container"></div>
   <div class="col-md-4 offset-md-8 pt-2">
-    <geometryUploader v-bind:model="model" v-on:parsedModel="viewModel"></geometryUploader>
+    <geometryUploader v-bind:model="model" v-on:parsedModel="addModelToScene"></geometryUploader>
   </div>
 
 </div>
@@ -10,7 +10,8 @@
 
 <script>
 import {
-  initThree
+  initThree,
+  THREE_Controller
 } from "../libraries/three/create";
 import geometryUploader from "../components/geometryUploader.vue";
 
@@ -24,10 +25,14 @@ export default {
     geometryUploader
   },
   methods: {
-    viewModel: (model) => {
+    addModelToScene: (model) => {
       console.log('model is here: ', model);
       if (model && model.breps) {
-
+        model.breps.forEach((brep) => {
+          brep.threeMeshes.forEach((threeMesh) => {
+            THREE_Controller.addObjectToScene(threeMesh);
+          });
+        });
       }
     }
   },

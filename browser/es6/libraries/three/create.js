@@ -63,42 +63,45 @@ function initThree() {
 	}
 
 	window.addEventListener('resize', onresize, false);
+};
 
-	THREE_Controller = {
-		addObjectToScene: function(obj) {
-			scene.add(obj);
-		},
-		zoomToObject: function(obj) {
-			obj.geometry.computeBoundingSphere();
-			obj.geometry.computeBoundingBox();
+THREE_Controller = {
+	loader: new THREE.ObjectLoader(),
+  addObjectToScene: (obj) => {
+		const curObj = THREE_Controller.loader.parse(obj);
+		// console.log(curObj);
+		scene.add(curObj);
+  },
+  zoomToObject: (obj) => {
+    obj.geometry.computeBoundingSphere();
+    obj.geometry.computeBoundingBox();
 
-			const boundingSphere = obj.geometry.boundingSphere;
+    const boundingSphere = obj.geometry.boundingSphere;
 
-			const offset = 1.25;
+    const offset = 1.25;
 
-			const boundingBox = obj.geometry.boundingBox.clone();
-			const center = boundingBox.getCenter(new THREE.Vector3());
-			const size = boundingBox.getSize(new THREE.Vector3());
+    const boundingBox = obj.geometry.boundingBox.clone();
+    const center = boundingBox.getCenter(new THREE.Vector3());
+    const size = boundingBox.getSize(new THREE.Vector3());
 
-			// get the max side of the bounding box (fits to width OR height as needed )
-			const maxDim = Math.max(size.x, size.y, size.z);
-			console.log("max dimension: ", maxDim);
-			const fov = camera.fov * (Math.PI / 180);
-			let cameraZ = Math.abs(maxDim / 4 * Math.tan(fov * 2));
+    // get the max side of the bounding box (fits to width OR height as needed )
+    const maxDim = Math.max(size.x, size.y, size.z);
+    console.log("max dimension: ", maxDim);
+    const fov = camera.fov * (Math.PI / 180);
+    let cameraZ = Math.abs(maxDim / 4 * Math.tan(fov * 2));
 
-			cameraZ *= offset; // zoom out a little so that objects don't fill the screen
+    cameraZ *= offset; // zoom out a little so that objects don't fill the screen
 
-			camera.position.z = cameraZ;
+    camera.position.z = cameraZ;
 
-			const minZ = boundingBox.min.z;
-			const cameraToFarEdge = (minZ < 0) ? -minZ + cameraZ : cameraZ - minZ;
+    const minZ = boundingBox.min.z;
+    const cameraToFarEdge = (minZ < 0) ? -minZ + cameraZ : cameraZ - minZ;
 
-			camera.far = cameraToFarEdge * 3;
-			camera.updateProjectionMatrix();
-		}
-	};
+    camera.far = cameraToFarEdge * 3;
+    camera.updateProjectionMatrix();
+  }
 };
 
 export {
-	initThree
+	initThree, THREE_Controller
 };

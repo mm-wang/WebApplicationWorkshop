@@ -41,7 +41,6 @@ export default {
         method: 'POST',
         success: (response) => {
           component.$emit("parsedModel", response);
-          // console.log("model? ", response);
         }
       });
     }
