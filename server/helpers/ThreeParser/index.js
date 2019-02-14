@@ -2,7 +2,7 @@ const THREE = require("three");
 
 const THREE_Options = {
 	meshMaterial: new THREE.MeshNormalMaterial({
-		opacity: 0.4
+		opacity: 0.6
 	}),
 	lineMaterial: new THREE.LineDashedMaterial({
 		color: 0x99dddd,
@@ -29,7 +29,6 @@ function createThreeMeshes(breps /*model, resolve*/ ) {
 					transparent: true
 				});
 				threemesh.material = material;
-				console.log(threemesh);
 				brep.threeMeshes.push(threemesh);
 				mesh = null;
 			}

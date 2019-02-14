@@ -27,12 +27,14 @@ export default {
   methods: {
     addModelToScene: (model) => {
       console.log('model is here: ', model);
+      THREE_Controller.resetScene();
       if (model && model.breps) {
         model.breps.forEach((brep) => {
           brep.threeMeshes.forEach((threeMesh) => {
             THREE_Controller.addObjectToScene(threeMesh);
           });
         });
+        THREE_Controller.zoomExtents();
       }
     }
   },

@@ -35,22 +35,22 @@ let esLintJs = {
 		"$"
 	],
 	plugins: [
-		"vue"
+		"vue",
 	]
 };
 
 let paths = {
-	browser: ["./browser/**/*.js", "./browser/es6/**/*.js", "./browser/**/*.vue", "./browser/es6/**/*.vue"],
+	browser: ["./browser/**/*.js", "./browser/es6/**/*.js", "./browser/es6/**/**/*.js", "./browser/**/*.vue", "./browser/es6/**/*.vue"],
 	sass: ["./browser/css/*.scss"],
 	server: ["./server/**/*.js"],
-	// dependencies: ["./node_modules/three/build/three.min.js","./node_modules/three/examples/js/controls/OrbitControls.js"],
-	// rhino: ["./3dm/**.3dm"],
 	public: ["./public"],
 	rollupFolder: "./browser/es6/**/*.js",
 	rollupInput: "./browser/es6/main.js",
 	rollupOutput: "./public/main.js",
 	rollupNodeModules: ['./node_modules/**']
 }
+
+//plugins: https://github.com/storybooks/storybook/issues/1320#issuecomment-310777396
 
 let rollupOpts = {
 	es6Folder: paths.rollupFolder,
