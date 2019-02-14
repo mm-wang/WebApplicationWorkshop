@@ -16,9 +16,9 @@ const THREE_Options = {
 function createThreeMeshes(breps /*model, resolve*/ ) {
 	for (brepindex = 0; brepindex < breps.length; brepindex++) {
 		let brep = breps[brepindex];
-		if (brep.meshes.length > 0 && brep.threemeshes == null && brep.use !== "staging") {
+		if (brep.meshes.length > 0 && brep.threeMeshes == null && brep.use !== "staging") {
 			const meshes = brep.meshes;
-			brep.threemeshes = [];
+			brep.threeMeshes = [];
 			let mesh, meshindex;
 			for (meshindex = 0; meshindex < meshes.length; meshindex++) {
 				mesh = meshes[meshindex];
@@ -29,7 +29,8 @@ function createThreeMeshes(breps /*model, resolve*/ ) {
 					transparent: true
 				});
 				threemesh.material = material;
-				brep.threemeshes.push(threemesh);
+				console.log(threemesh);
+				brep.threeMeshes.push(threemesh);
 				mesh = null;
 			}
 		}

@@ -31,7 +31,7 @@ class RhinoModel {
 				geometry: obj.geometry(),
 				use: "",
 				meshes: [],
-				threemeshes: null
+				threeMeshes: null
 			});
 		}
 	}
@@ -39,22 +39,43 @@ class RhinoModel {
 	async computeMeshes() {
 		let rM = this;
 
+		/**
+		 * Fetch meshes from rhinoCompute
+		 * @param  {RhinoModel} m    an instance of RhinoModel class
+		 * @param  {Object} brep current brep
+		 * @param  {Number} i    index of the brep
+		 * @return {Object}      brep geometry
+		 */
 		let fetchMeshes = (m, brep, i) => {
 			//RhinoCompute calls return promises!
 			return RhinoCompute.Mesh.createFromBrep(brep).then(result => {
 				var meshes = result.map(r => rhino3dm.CommonObject.decode(r));
 				m.breps[i].meshes = meshes;
-				return result;
+				return;
 			});
-		}
+		};
 
+		/**
+		 * Wait for each brep to fetch its meshes using RhinoCompute
+		 * @param  {Object}  brep one brep at an index
+		 * @param  {Number}  i    index of the brep
+		 * @return {Promise}      the RhinoCompute meshes
+		 */
 		let asyncFetchMeshes = async (brep, i) => {
 			let brepGeo = rM.breps[i]["geometry"];
 			return await fetchMeshes(rM, brepGeo, i);
-		}
+		};
 
+		/**
+		 * Iterate through all breps in the model and fetch the meshes
+		 * asyncronously
+		 */
 		let fetchArr = rM.breps.map((brep, i) => asyncFetchMeshes(brep, i));
 
+		/**
+		 * Wait for the iteration and creating of those meshes, and
+		 * then return the model
+		 */
 		return await Promise.all(fetchArr).then((results) => {
 			return rM;
 		}).catch((err) => {
