@@ -32,6 +32,7 @@ let RhinoCompute = {
       })
 			.catch((err)=> {
         console.log("Rhino Compute call errored: ", err);
+				// return null;
       });
 	},
 
@@ -2238,7 +2239,6 @@ let RhinoCompute = {
 			if (multiple) url = url + "?multiple=true"
 			let args = RhinoCompute.zipArgs(multiple, brep);
 			var promise = RhinoCompute.computeFetch(url, args);
-			console.log(promise);
 			return promise;
 		},
 

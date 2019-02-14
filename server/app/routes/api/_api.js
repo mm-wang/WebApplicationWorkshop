@@ -2,6 +2,7 @@ const router = require("express").Router();
 const fs = require("fs");
 const rhino3dm = require("rhino3dm")();
 const RhinoModel = require("server/helpers/RhinoModel");
+const THREE_Parser = require("server/helpers/ThreeParser");
 module.exports = router;
 
 router.needleOpts = {
@@ -50,9 +51,13 @@ router.post("/create-model", multerUpload.single("geo"), (req, res) => {
 		let model = rhino3dm.File3dm.fromByteArray(array);
 		let rhinoModel = new RhinoModel(model);
 		// return res.json(rhinoModel);
-		rhinoModel.computeMeshes().then((model)=> {
-			console.log("rhino model? ", rhinoModel);
+		rhinoModel.computeMeshes().then((model) => {
+			try {
+				THREE_Parser.createThreeMeshes(rhinoModel.breps);
+			} catch (err) {
+				return res.status(500).send(err);
+			}
 			return res.json(rhinoModel);
 		});
-		});
+	});
 });

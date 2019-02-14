@@ -28,9 +28,10 @@ class RhinoModel {
 
 		function pushBrep(instance, obj) {
 			instance.breps.push({
-				"geometry": obj.geometry(),
-				"use": "",
-				"meshes": []
+				geometry: obj.geometry(),
+				use: "",
+				meshes: [],
+				threemeshes: null
 			});
 		}
 	}
