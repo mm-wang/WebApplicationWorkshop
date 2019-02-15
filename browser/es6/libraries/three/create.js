@@ -1,13 +1,5 @@
-let container, camera, scene, renderer, orbitControls, raycaster;
-let mouse = new THREE.Vector2();
+let container, camera, scene, renderer, orbitControls;
 const BACKGROUND_COLOR = "#004466";
-const INTERSECTED = {
-	obj: null,
-	material: null,
-	highlight: new THREE.MeshLambertMaterial({
-		color: 0x99dddd
-	})
-};
 
 const initThree = () => {
 	/**
@@ -32,12 +24,6 @@ const initThree = () => {
 	orbitControls = new THREE.OrbitControls(camera, renderer.domElement);
 
 	/**
-	 * Set up raycast for intersection
-	 */
-	raycaster = new THREE.Raycaster();
-	console.log("raycaster: ", raycaster);
-
-	/**
 	 * Set up lights
 	 */
 	const light = new THREE.AmbientLight(0xfff000); // soft white light
@@ -54,29 +40,8 @@ const initThree = () => {
 	function animate() {
 		requestAnimationFrame(animate);
 		orbitControls.update();
-		findIntersection();
 		render();
 	};
-
-	function findIntersection() {
-		raycaster.setFromCamera(mouse, camera);
-		const intersects = raycaster.intersectObjects(scene.children);
-		if (!intersects.length) {
-			if(INTERSECTED.obj) INTERSECTED.obj.material = INTERSECTED.material;
-			INTERSECTED.obj = null;
-			INTERSECTED.material = null;
-		} else {
-			INTERSECTED.obj = intersects[0].object;
-			INTERSECTED.material = INTERSECTED.highlight;
-		}
-		// TODO: Add intersection highlights
-	}
-
-	function onDocumentMouseMove(event) {
-		event.preventDefault();
-		mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-		mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-	}
 
 	function render() {
 		renderer.render(scene, camera);
@@ -89,7 +54,6 @@ const initThree = () => {
 	}
 
 	window.addEventListener('resize', onresize, false);
-	window.addEventListener('mousemove', onDocumentMouseMove, false);
 };
 
 const THREE_Controller = {
