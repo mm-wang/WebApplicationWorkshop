@@ -1,9 +1,18 @@
-let container, camera, scene, renderer, orbitControls;
+let container, camera, scene, renderer, orbitControls, raycaster;
+let mouse = new THREE.Vector2();
 const BACKGROUND_COLOR = "#004466";
+const INTERSECTED = {
+	obj: null,
+	material: null,
+	highlight: new THREE.MeshLambertMaterial({
+		color: 0x99dddd
+	})
+};
 
 const initThree = () => {
-	/*
-	  Set up scene and camera
+	/**
+	 * Set up scene and camera
+	 * @type {THREE}
 	 */
 	THREE.Object3D.DefaultUp = new THREE.Vector3(0, 0, 1);
 	container = document.getElementById('three-container');
@@ -14,29 +23,60 @@ const initThree = () => {
 	renderer.setSize(window.innerWidth, window.innerHeight);
 	container.appendChild(renderer.domElement);
 
-
-	orbitControls = new THREE.OrbitControls(camera, renderer.domElement);
-	// orbitControls.update();
-
 	scene = new THREE.Scene();
 	scene.background = new THREE.Color(BACKGROUND_COLOR);
 
-	var light = new THREE.AmbientLight(0xfff000); // soft white light
+	/**
+	 * Set up orbit controls
+	 */
+	orbitControls = new THREE.OrbitControls(camera, renderer.domElement);
+
+	/**
+	 * Set up raycast for intersection
+	 */
+	raycaster = new THREE.Raycaster();
+	console.log("raycaster: ", raycaster);
+
+	/**
+	 * Set up lights
+	 */
+	const light = new THREE.AmbientLight(0xfff000); // soft white light
 	scene.add(light);
-	var sunLight = new THREE.DirectionalLight(0xffffff, 5);
+	const sunLight = new THREE.DirectionalLight(0xffffff, 5);
 	scene.add(sunLight);
 
-	var geometry = new THREE.BoxGeometry(1, 1, 1);
-	var material = new THREE.MeshNormalMaterial();
-
+	/**
+	 * Initial render and animation
+	 */
 	renderer.render(scene, camera);
 	animate();
 
 	function animate() {
 		requestAnimationFrame(animate);
 		orbitControls.update();
+		findIntersection();
 		render();
 	};
+
+	function findIntersection() {
+		raycaster.setFromCamera(mouse, camera);
+		const intersects = raycaster.intersectObjects(scene.children);
+		if (!intersects.length) {
+			if(INTERSECTED.obj) INTERSECTED.obj.material = INTERSECTED.material;
+			INTERSECTED.obj = null;
+			INTERSECTED.material = null;
+		} else {
+			INTERSECTED.obj = intersects[0].object;
+			INTERSECTED.material = INTERSECTED.highlight;
+		}
+		// TODO: Add intersection highlights
+	}
+
+	function onDocumentMouseMove(event) {
+		event.preventDefault();
+		mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+		mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+	}
 
 	function render() {
 		renderer.render(scene, camera);
@@ -49,6 +89,7 @@ const initThree = () => {
 	}
 
 	window.addEventListener('resize', onresize, false);
+	window.addEventListener('mousemove', onDocumentMouseMove, false);
 };
 
 const THREE_Controller = {
@@ -121,11 +162,11 @@ const THREE_Controller = {
 		camera.updateProjectionMatrix();
 
 		if (orbitControls) {
-			// set camera to rotate around center of loaded object
+			// 	// set camera to rotate around center of loaded object
 			orbitControls.target = center;
-			// prevent camera from zooming out far enough to create far plane cutoff
+			// 	// prevent camera from zooming out far enough to create far plane cutoff
 			orbitControls.maxDistance = cameraToFarEdge * 2;
-			orbitControls.saveState();
+			// 	orbitControls.saveState();
 		} else {
 			camera.lookAt(center);
 		}
