@@ -34,6 +34,7 @@ let multerUpload = multer({
 /*
 Routes
  */
+// Example route returning what you see using rhino3dm
 router.get("/retrieve-something", (req, res) => {
 	fs.readFile("3dm/massing_core_2.3dm", (err, data) => {
 		let sphere = new rhino3dm.Sphere([1, 2, 3], 12);
@@ -44,13 +45,12 @@ router.get("/retrieve-something", (req, res) => {
 	});
 });
 
-
+// Create THREEjs meshes from a Rhino model
 router.post("/create-model", multerUpload.single("geo"), (req, res) => {
 	fs.readFile("uploads/" + req.file.filename, (err, data) => {
 		let array = new Uint8Array(data);
 		let model = rhino3dm.File3dm.fromByteArray(array);
 		let rhinoModel = new RhinoModel(model);
-		// return res.json(rhinoModel);
 		rhinoModel.computeMeshes().then((model) => {
 			try {
 				THREE_Parser.createThreeMeshes(rhinoModel.breps);

@@ -35,6 +35,12 @@ class RhinoModel {
 			});
 		}
 	}
+	/**
+	 * Compute the meshes by querying RhinoCompute for the mesh representing the
+	 * geometry, then using rhino3dm to decode the meshes, then sending all back
+	 * asyncronously
+	 * @return {Promise} Array of fetched meshes
+	 */
 	// This for reference: https://flaviocopes.com/javascript-async-await-array-map/
 	async computeMeshes() {
 		let rM = this;

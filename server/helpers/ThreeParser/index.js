@@ -13,7 +13,13 @@ const THREE_Options = {
 	})
 }
 
-function createThreeMeshes(breps /*model, resolve*/ ) {
+/**
+ * Iterate through all the breps in the model, get the meshes in the brep,
+ * and create a THREEjs mesh from the mesh and mesh material specified in the
+ * options
+ * @param  {[Object]} breps 	array of breps from the model
+ */
+function createThreeMeshes(breps) {
 	for (brepindex = 0; brepindex < breps.length; brepindex++) {
 		let brep = breps[brepindex];
 		if (brep.meshes.length > 0 && brep.threeMeshes == null && brep.use !== "staging") {
@@ -22,7 +28,6 @@ function createThreeMeshes(breps /*model, resolve*/ ) {
 			let mesh, meshindex;
 			for (meshindex = 0; meshindex < meshes.length; meshindex++) {
 				mesh = meshes[meshindex];
-				const lines = null; // meshToLineSegments(mesh, lineMaterial);
 				const threemesh = meshToThreeJS(mesh, THREE_Options.meshMaterial);
 				const material = new THREE.MeshNormalMaterial({
 					opacity: 0.3,
@@ -36,6 +41,12 @@ function createThreeMeshes(breps /*model, resolve*/ ) {
 	}
 }
 
+/**
+ * With a mesh description and material, creates a THREEjs mesh
+ * @param  {Object} mesh     mesh as taken from the geometry
+ * @param  {Object} material material as described by the options
+ * @return {Object}          THREE mesh
+ */
 function meshToThreeJS(mesh, material) {
 	const geometry = new THREE.BufferGeometry();
 	const vertices = mesh.vertices();
