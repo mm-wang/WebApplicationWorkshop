@@ -5,9 +5,9 @@ let RhinoCompute = require("server/external/RhinoCompute");
 class RhinoModel {
 	constructor(model) {
 		this.model = model;
-		this.breps = [];
+		this.breps = model.breps || [];
 		RhinoCompute.authToken = RhinoCompute.getAuthToken(true);
-		if (model) {
+		if (model && this.breps.length === 0) {
 			this.populate(model);
 		}
 	}
@@ -35,6 +35,14 @@ class RhinoModel {
 			});
 		}
 	}
+
+	async computeIntersection(plane){
+
+		RhinoCompute.Intersection.brepPlane(breps, plane).then(result => {
+			console.log("result of intersection", result);
+		})
+	}
+
 	/**
 	 * Compute the meshes by querying RhinoCompute for the mesh representing the
 	 * geometry, then using rhino3dm to decode the meshes, then sending all back

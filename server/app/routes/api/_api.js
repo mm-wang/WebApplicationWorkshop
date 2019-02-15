@@ -51,6 +51,8 @@ router.post("/create-model", multerUpload.single("geo"), (req, res) => {
 		let array = new Uint8Array(data);
 		let model = rhino3dm.File3dm.fromByteArray(array);
 		let rhinoModel = new RhinoModel(model);
+		console.log(typeof rhinoModel, rhinoModel instanceof RhinoModel);
+		rhinoModel.name = req.file.filename;
 		rhinoModel.computeMeshes().then((model) => {
 			try {
 				THREE_Parser.createThreeMeshes(rhinoModel.breps);
@@ -61,3 +63,14 @@ router.post("/create-model", multerUpload.single("geo"), (req, res) => {
 		});
 	});
 });
+
+// Slice a Rhino model using the floors
+router.post("/slice-model", (req, res) => {
+	console.log("in slice model", req.body);
+	if (!req.body.model) return res.status(406).send("No model provided");
+	const model = new RhinoModel(req.body.model);
+	const plane = {"origin":[0,0,0],"xAxis":[1,0,0],"yAxis":[0,1,0],"zAxis":[0,0,1]};
+	console.log(typeof model, model instanceof RhinoModel);
+	console.log("the model is now a rhinomodel", model);
+
+})

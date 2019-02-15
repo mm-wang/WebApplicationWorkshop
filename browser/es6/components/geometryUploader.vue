@@ -1,7 +1,7 @@
 <template>
 <div class="card">
   <div class="card-body">
-    <h3 class="card-title">Upload Geometry</h3>
+    <h4 class="card-title">Upload Geometry</h4>
     <form id="geo-upload" ref="myGeoForm" enctype="multipart/form-data" novalidate>
       <div class="custom-file">
         <label for="geo-file" class="custom-file-label">Select .3dm file</label>
