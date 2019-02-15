@@ -41,6 +41,8 @@ export default {
         method: 'POST',
         success: (response) => {
           component.$emit("parsedModel", response);
+          component.$refs.myGeoFile.files = null;
+          component.file = null;
         }
       });
     }

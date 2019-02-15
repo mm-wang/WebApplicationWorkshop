@@ -75,6 +75,7 @@ const THREE_Controller = {
 			extents.min[dir] = Number.MAX_VALUE;
 			extents.max[dir] = Number.MIN_VALUE;
 		});
+		THREE_Controller.sceneObjs.forEach(THREE_Controller.removeObjectFromScene);
 		THREE_Controller.sceneObjs = [];
 		THREE_Controller.sceneExtents = extents;
 	},
@@ -82,6 +83,9 @@ const THREE_Controller = {
 		const curObj = THREE_Controller.loader.parse(obj);
 		scene.add(curObj);
 		THREE_Controller.computeBoundingBox(curObj);
+	},
+	removeObjectFromScene: (obj) => {
+		scene.remove(obj);
 	},
 	computeBoundingBox: (obj) => {
 		obj.geometry.computeBoundingBox();
@@ -110,7 +114,6 @@ const THREE_Controller = {
 		cameraZ *= offset; // zoom out a little so that objects don't fill the screen
 
 		camera.position.z = center.z + cameraZ;
-		console.log("camera position z", camera.position.z);
 		const minZ = boundingBox.min.z;
 		const cameraToFarEdge = (minZ < 0) ? -minZ + cameraZ : cameraZ - minZ;
 
