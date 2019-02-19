@@ -211,7 +211,12 @@ const watchBrowserJs = () => {
 }
 watchBrowserJs.description = "Watch the javascript sources, reload";
 
-const buildWatch = gulp.series(build, gulp.parallel(watchBrowserJs, watchSass));
+const watchServerJs = () => {
+	return gulp.watch(paths.server, gulp.series(lintServerJs, reload))
+}
+watchServerJs.description = "Watch the javascript server, reload";
+
+const buildWatch = gulp.series(build, gulp.parallel(watchBrowserJs, watchSass, watchServerJs));
 buildWatch.description = "Default task: building and watching series";
 
 const buildRollup = gulp.series(jsRollup);
