@@ -31,7 +31,7 @@ let RhinoCompute = {
         return res.body;
       })
 			.catch((err)=> {
-        console.log("Rhino Compute call errored: ", err);
+        console.log("Rhino Compute call errored: ", err.response.error);
 				// return null;
       });
 	},
