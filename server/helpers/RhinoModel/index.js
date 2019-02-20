@@ -39,13 +39,8 @@ class RhinoModel {
 	computeIntersection(plane) {
 		const rM = this;
 		const breps = rM.breps.map((each) => {
-			// console.log("decoding: ", rhino3dm.CommonObject.decode(each.geometry));
 			return rhino3dm.CommonObject.decode(each.geometry);
 		});
-
-		console.log("breps: ", breps);
-		console.log("plane: ", plane);
-
 		return RhinoCompute.Intersection.brepPlane(breps[0], plane, 0.01)
 			.then((result) => {
 				const intersection = result.reduce((intersect, r) => {

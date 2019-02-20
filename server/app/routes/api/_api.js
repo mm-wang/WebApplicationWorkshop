@@ -66,15 +66,10 @@ router.post("/create-model", multerUpload.single("geo"), (req, res) => {
 
 // Slice a Rhino model using the floors
 router.post("/slice-model", (req, res) => {
-	console.log("in slice model", req.body);
+	// console.log("in slice model", req.body);
 	if (!req.body.model) return res.status(406).send("No model provided");
 	const model = new RhinoModel(req.body.model);
 	const plane = {
-		Origin: {
-			X: 0.0,
-			Y: 0.0,
-			Z: 1.5
-		},
 		XAxis: {
 			X: 1.0,
 			Y: 0.0,
@@ -96,12 +91,32 @@ router.post("/slice-model", (req, res) => {
 			Z: 1.0
 		}
 	};
+	req.body.floors.unshift("0");
 
-	console.log(typeof model, model instanceof RhinoModel);
-	console.log("the model is now a rhinomodel", model);
-	model.computeIntersection(plane).then((computed) => {
-		return res.json(computed);
+	const planes = req.body.floors.map((floor) => {
+		let cur = {
+			Origin: {
+				X: 0,
+				Y: 0,
+				Z: +floor
+			},
+			XAxis: Object.assign({}, plane.XAxis),
+			YAxis: Object.assign({}, plane.YAxis),
+			ZAxis: Object.assign({}, plane.ZAxis),
+			Normal: Object.assign({}, plane.Normal)
+		};
+		return model.computeIntersection(cur);
 	});
 
+	Promise.all(planes).then((result) => {
+		const areas = result.map((each) => {
+			return each.Area;
+		});
+		return res.json(areas);
+	})
 
+	// console.log(typeof model, model instanceof RhinoModel);
+	// model.computeIntersection(plane).then((computed) => {
+	// 	return res.json(computed);
+	// });
 })

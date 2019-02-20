@@ -3,7 +3,9 @@
   <div id="three-container"></div>
   <div class="col-md-4 offset-md-8 pt-2">
     <geometryUploader v-bind:model="model" v-on:parsedModel="addModelToScene"></geometryUploader>
-    <floorEntry class="mt-2" v-bind:model="model"></floorEntry>
+    <floorEntry class="mt-2" v-bind:model="model" v-on:slicedAreas="addFloorAreas"></floorEntry>
+    <areaData v-if="areas" class="mt-2" v-bind:areas="areas" v-on:slicedAreas="addFloorAreas"></areaData>
+
   </div>
 
 </div>
@@ -16,16 +18,19 @@ import {
 } from "../libraries/three/create";
 import geometryUploader from "../components/geometryUploader.vue";
 import floorEntry from "../components/floorEntry.vue";
+import areaData from "../components/areaData.vue";
 
 export default {
   data() {
     return {
       model: null,
+      areas: null
     }
   },
   components: {
     geometryUploader,
-    floorEntry
+    floorEntry,
+    areaData
   },
   methods: {
     addModelToScene(model) {
@@ -41,6 +46,11 @@ export default {
         });
         THREE_Controller.zoomExtents();
       }
+    },
+    addFloorAreas(areas) {
+      const component = this;
+      console.log("areas are here: ", areas);
+      component.areas = areas;
     }
   },
   created() {

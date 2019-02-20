@@ -74,21 +74,9 @@ export default {
         processData: false,
         method: 'POST',
         success: (response) => {
-          console.log('floor areas? ', response);
+          component.$emit("slicedAreas", response);
         }
       });
-
-      // $.ajax({
-      //   url: '/api/slice-model',
-      //   data: formData,
-      //   cache: false,
-      //   contentType: false,
-      //   processData: false,
-      //   method: 'POST',
-      //   success: (response) => {
-      //     console.log('floor areas? ', response);
-      //   }
-      // });
     }
   }
 }
