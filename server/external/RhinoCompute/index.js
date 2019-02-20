@@ -28,12 +28,12 @@ let RhinoCompute = {
 			.set("User-Agent", `compute.rhino3d.js/${RhinoCompute.version}`)
 			.send(JSON.stringify(arglist))
 			.then((res) => {
-        return res.body;
-      })
-			.catch((err)=> {
-        console.log("Rhino Compute call errored: ", err.response.error);
+				return res.body;
+			})
+			.catch((err) => {
+				console.log("Rhino Compute call errored: ", err.response.error);
 				// return null;
-      });
+			});
 	},
 
 	zipArgs: function(multiple, ...args) {
@@ -3354,6 +3354,15 @@ let RhinoCompute = {
 			return promise;
 		},
 	},
+	Plane: {
+		newPlane: function(pointO, vectorN, multiple = false) {
+			let url = "rhino/geometry/plane/new";
+			if (multiple) url = url + "?multiple=true"
+			let args = RhinoCompute.zipArgs(multiple, pointO, vectorN);
+			var promise = RhinoCompute.computeFetch(url, args);
+			return promise;
+		}
+	}
 };
 
 // export RhinoCompute object if node.js

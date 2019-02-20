@@ -48,18 +48,18 @@ router.get("/retrieve-something", (req, res) => {
 // Create THREEjs meshes from a Rhino model
 router.post("/create-model", multerUpload.single("geo"), (req, res) => {
 	fs.readFile("uploads/" + req.file.filename, (err, data) => {
-		let array = new Uint8Array(data);
-		let model = rhino3dm.File3dm.fromByteArray(array);
-		let rhinoModel = new RhinoModel(model);
-		console.log(typeof rhinoModel, rhinoModel instanceof RhinoModel);
-		rhinoModel.name = req.file.filename;
-		rhinoModel.computeMeshes().then((model) => {
+		const array = new Uint8Array(data);
+		const initModel = rhino3dm.File3dm.fromByteArray(array);
+		const model = new RhinoModel(initModel);
+		console.log(model instanceof RhinoModel);
+		model.name = req.file.filename;
+		model.computeMeshes().then((computed) => {
 			try {
-				THREE_Parser.createThreeMeshes(rhinoModel.breps);
+				THREE_Parser.createThreeMeshes(model.breps);
 			} catch (err) {
 				return res.status(500).send(err);
 			}
-			return res.json(rhinoModel);
+			return res.json(model);
 		});
 	});
 });
@@ -69,8 +69,39 @@ router.post("/slice-model", (req, res) => {
 	console.log("in slice model", req.body);
 	if (!req.body.model) return res.status(406).send("No model provided");
 	const model = new RhinoModel(req.body.model);
-	const plane = {"origin":[0,0,0],"xAxis":[1,0,0],"yAxis":[0,1,0],"zAxis":[0,0,1]};
+	const plane = {
+		Origin: {
+			X: 0.0,
+			Y: 0.0,
+			Z: 1.5
+		},
+		XAxis: {
+			X: 1.0,
+			Y: 0.0,
+			Z: 0.0
+		},
+		YAxis: {
+			X: 0.0,
+			Y: 1.0,
+			Z: 0.0
+		},
+		ZAxis: {
+			X: 0.0,
+			Y: 0.0,
+			Z: 1.0
+		},
+		Normal: {
+			X: 0.0,
+			Y: 0.0,
+			Z: 1.0
+		}
+	};
+
 	console.log(typeof model, model instanceof RhinoModel);
 	console.log("the model is now a rhinomodel", model);
+	model.computeIntersection(plane).then((computed) => {
+		return res.json(computed);
+	});
+
 
 })

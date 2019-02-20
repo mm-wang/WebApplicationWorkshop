@@ -36,11 +36,29 @@ class RhinoModel {
 		}
 	}
 
-	async computeIntersection(plane){
+	computeIntersection(plane) {
+		const rM = this;
+		const breps = rM.breps.map((each) => {
+			// console.log("decoding: ", rhino3dm.CommonObject.decode(each.geometry));
+			return rhino3dm.CommonObject.decode(each.geometry);
+		});
 
-		RhinoCompute.Intersection.brepPlane(breps, plane).then(result => {
-			console.log("result of intersection", result);
-		})
+		console.log("breps: ", breps);
+		console.log("plane: ", plane);
+
+		return RhinoCompute.Intersection.brepPlane(breps[0], plane, 0.01)
+			.then((result) => {
+				const intersection = result.reduce((intersect, r) => {
+					if (r.length && r.length > 0) intersect = rhino3dm.CommonObject.decode(r[0]);
+					return intersect;
+				}, null);
+				return RhinoCompute.AreaMassProperties.compute(intersection);
+			}).then((result) => {
+				return result;
+			}).catch((err) => {
+				console.log("error: ", err);
+				return 0;
+			});
 	}
 
 	/**
@@ -51,7 +69,7 @@ class RhinoModel {
 	 */
 	// This for reference: https://flaviocopes.com/javascript-async-await-array-map/
 	async computeMeshes() {
-		let rM = this;
+		const rM = this;
 
 		/**
 		 * Fetch meshes from rhinoCompute
@@ -60,10 +78,10 @@ class RhinoModel {
 		 * @param  {Number} i    index of the brep
 		 * @return {Object}      brep geometry
 		 */
-		let fetchMeshes = (m, brep, i) => {
+		const fetchMeshes = (m, brep, i) => {
 			//RhinoCompute calls return promises!
 			return RhinoCompute.Mesh.createFromBrep(brep).then(result => {
-				var meshes = result.map(r => rhino3dm.CommonObject.decode(r));
+				const meshes = result.map(r => rhino3dm.CommonObject.decode(r));
 				m.breps[i].meshes = meshes;
 				return;
 			});
@@ -75,8 +93,8 @@ class RhinoModel {
 		 * @param  {Number}  i    index of the brep
 		 * @return {Promise}      the RhinoCompute meshes
 		 */
-		let asyncFetchMeshes = async (brep, i) => {
-			let brepGeo = rM.breps[i]["geometry"];
+		const asyncFetchMeshes = async (brep, i) => {
+			const brepGeo = rM.breps[i]["geometry"];
 			return await fetchMeshes(rM, brepGeo, i);
 		};
 
@@ -84,7 +102,7 @@ class RhinoModel {
 		 * Iterate through all breps in the model and fetch the meshes
 		 * asyncronously
 		 */
-		let fetchArr = rM.breps.map((brep, i) => asyncFetchMeshes(brep, i));
+		const fetchArr = rM.breps.map((brep, i) => asyncFetchMeshes(brep, i));
 
 		/**
 		 * Wait for the iteration and creating of those meshes, and
