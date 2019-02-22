@@ -51,7 +51,7 @@ router.post("/create-model", multerUpload.single("geo"), (req, res) => {
 		const array = new Uint8Array(data);
 		const initModel = rhino3dm.File3dm.fromByteArray(array);
 		const model = new RhinoModel(initModel);
-		console.log(model instanceof RhinoModel);
+		console.log(model instanceof RhinoModel, unit);
 		model.name = req.file.filename;
 		model.computeMeshes().then((computed) => {
 			try {
@@ -91,7 +91,6 @@ router.post("/slice-model", (req, res) => {
 			Z: 1.0
 		}
 	};
-	req.body.floors.unshift("0");
 
 	const planes = req.body.floors.map((floor) => {
 		let cur = {

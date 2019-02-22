@@ -42,6 +42,7 @@ export default {
       }
       chars[","] = true;
       chars[" "] = true;
+      chars["Enter"] = true;
       // Check if the whole entry is valid
       let length = backspaced ? floors.length - 1 : floors.length;
       for (let i = 0; i < length; i++) {
@@ -53,18 +54,15 @@ export default {
     },
     getAreas() {
       const component = this;
-      let formData = new FormData();
-      formData.append("model", component.model);
-      formData.append("floors", component.floors);
       const floors = component.floors.split(",").map((char) => {
         return char.trim();
       });
+
       const data = {
         model: component.model,
         floors: floors
       };
-      console.log("what are the floors?", floors);
-      console.log("do we have a model?", component.model);
+      component.$emit("enteredFloors", floors);
 
       $.ajax({
         url: '/api/slice-model',

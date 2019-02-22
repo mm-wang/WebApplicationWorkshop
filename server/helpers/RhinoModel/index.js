@@ -1,10 +1,13 @@
 // const Promise = require('bluebird');
 const rhino3dm = require("rhino3dm")();
 let RhinoCompute = require("server/external/RhinoCompute");
+// let RhinoCompute = require("compute-rhino3d");
+// RhinoCompute.authToken = "bearer <token>" ;
 
 class RhinoModel {
 	constructor(model) {
 		this.model = model;
+		this.unit = null;
 		this.breps = model.breps || [];
 		RhinoCompute.authToken = RhinoCompute.getAuthToken(true);
 		if (model && this.breps.length === 0) {
@@ -44,7 +47,7 @@ class RhinoModel {
 		return RhinoCompute.Intersection.brepPlane(breps[0], plane, 0.01)
 			.then((result) => {
 				const intersection = result.reduce((intersect, r) => {
-					if (r.length && r.length > 0) intersect = rhino3dm.CommonObject.decode(r[0]);
+					if (r && r.length && r.length > 0) intersect = rhino3dm.CommonObject.decode(r[0]);
 					return intersect;
 				}, null);
 				return RhinoCompute.AreaMassProperties.compute(intersection);

@@ -3,8 +3,8 @@
   <div id="three-container"></div>
   <div class="col-md-4 offset-md-8 pt-2">
     <geometryUploader v-bind:model="model" v-on:parsedModel="addModelToScene"></geometryUploader>
-    <floorEntry class="mt-2" v-bind:model="model" v-on:slicedAreas="addFloorAreas"></floorEntry>
-    <areaData v-if="areas" class="mt-2" v-bind:areas="areas" v-on:slicedAreas="addFloorAreas"></areaData>
+    <floorEntry class="mt-2" v-bind:model="model" v-on:enteredFloors="setFloors" v-on:slicedAreas="addFloorAreas" ></floorEntry>
+    <areaData v-if="areas" class="mt-2" v-bind:areas="areas" v-bind:floors="floors" v-on:slicedAreas="addFloorAreas"></areaData>
 
   </div>
 
@@ -24,7 +24,8 @@ export default {
   data() {
     return {
       model: null,
-      areas: null
+      areas: null,
+      floors: null
     }
   },
   components: {
@@ -47,9 +48,12 @@ export default {
         THREE_Controller.zoomExtents();
       }
     },
+    setFloors(floors){
+      const component = this;
+      component.floors = floors;
+    },
     addFloorAreas(areas) {
       const component = this;
-      console.log("areas are here: ", areas);
       component.areas = areas;
     }
   },
