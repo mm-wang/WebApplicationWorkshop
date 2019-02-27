@@ -1,4 +1,6 @@
 public
+package-lock.json
+*.rhl
 
 # Logs
 logs

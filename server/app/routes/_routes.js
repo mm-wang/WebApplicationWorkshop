@@ -6,6 +6,8 @@ module.exports = router;
 
 let viewsPath = path.join(__dirname, "..", "views/");
 
+router.use("/api", require("server/app/routes/api/_api"));
+
 router.get("/*", function(req, res) {
     res.sendFile(viewsPath + "index.html");
 });
