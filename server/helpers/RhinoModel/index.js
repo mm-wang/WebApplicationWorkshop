@@ -9,6 +9,7 @@ class RhinoModel {
 		this.model = model;
 		this.unit = null;
 		this.breps = model.breps || [];
+		this.curves = model.curves || [];
 		RhinoCompute.authToken = RhinoCompute.getAuthToken(true);
 		if (model && this.breps.length === 0) {
 			this.populate(model);
@@ -22,21 +23,30 @@ class RhinoModel {
 			let geoType = geo.constructor.name;
 			switch (geoType) {
 				case "Brep":
-					pushBrep(this, modelObj);
+					this.pushBrep(modelObj);
 					break;
 				default:
 					break;
 			}
 		}
+	}
 
-		function pushBrep(instance, obj) {
-			instance.breps.push({
-				geometry: obj.geometry(),
-				use: "",
-				meshes: [],
-				threeMeshes: null
-			});
-		}
+	pushBrep(obj) {
+		let instance = this;
+		instance.breps.push({
+			geometry: obj.geometry(),
+			use: "",
+			meshes: [],
+			threeMeshes: null
+		});
+	}
+
+	pushCurve(obj) {
+		let instance = this;
+		instance.curves.push({
+			geometry: obj,
+			threeLine: null
+		});
 	}
 
 	computeIntersection(plane) {
@@ -50,7 +60,11 @@ class RhinoModel {
 					if (r && r.length && r.length > 0) intersect = rhino3dm.CommonObject.decode(r[0]);
 					return intersect;
 				}, null);
-				return RhinoCompute.AreaMassProperties.compute(intersection);
+				if (intersection) {
+					rM.pushCurve(intersection);
+					return RhinoCompute.AreaMassProperties.compute(intersection);
+				}
+				return Promise.resolve(1);
 			}).then((result) => {
 				return result;
 			}).catch((err) => {

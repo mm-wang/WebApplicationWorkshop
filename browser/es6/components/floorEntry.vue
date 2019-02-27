@@ -57,6 +57,8 @@ export default {
       const floors = component.floors.split(",").map((char) => {
         return char.trim();
       });
+      // component.model.curves = [];
+      component.$emit("clearCurves");
 
       const data = {
         model: component.model,
@@ -72,7 +74,8 @@ export default {
         processData: false,
         method: 'POST',
         success: (response) => {
-          component.$emit("slicedAreas", response);
+          // component.$emit("slicedAreas", response);
+          component.$emit("slicedCurves", response);
         }
       });
     }

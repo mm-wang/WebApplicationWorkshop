@@ -81,6 +81,30 @@ function meshToThreeJS(mesh, material) {
 	return new THREE.Mesh(geometry, material);
 }
 
+function createThreeCurves(curves) {
+	for (curveindex = 0; curveindex < curves.length; curveindex++) {
+		curve = curves[curveindex].geometry;
+		var line = curveToThreeJS(curve, THREE_Options.lineMaterial);
+		curves[curveindex].threeLine = line;
+	}
+}
+
+function curveToThreeJS(curve, material) {
+	console.log("curve ready for threejs: ", curve);
+	var geometry = new THREE.Geometry();
+	var domain = curve.domain;
+	var start = domain[0];
+	var range = domain[1] - domain[0];
+	var interval = range / 50.0;
+	for (var i = 0; i < 51; i++) {
+		t = start + i * interval;
+		var pt = curve.pointAt(t);
+		geometry.vertices.push(new THREE.Vector3(pt[0], pt[1], pt[2]));
+	}
+	return new THREE.Line(geometry, material);
+}
+
 module.exports = {
-	createThreeMeshes
+	createThreeMeshes,
+	createThreeCurves
 };

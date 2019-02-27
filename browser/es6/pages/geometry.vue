@@ -3,8 +3,8 @@
   <div id="three-container"></div>
   <div class="col-md-4 offset-md-8 pt-2">
     <geometryUploader v-bind:model="model" v-on:parsedModel="addModelToScene"></geometryUploader>
-    <floorEntry class="mt-2" v-bind:model="model" v-on:enteredFloors="setFloors" v-on:slicedAreas="addFloorAreas" ></floorEntry>
-    <areaData v-if="areas" class="mt-2" v-bind:areas="areas" v-bind:floors="floors" v-on:slicedAreas="addFloorAreas"></areaData>
+    <floorEntry class="mt-2" v-bind:model="model" v-on:enteredFloors="setFloors" v-on:slicedCurves="addFloorsAndCurves" v-on:clearCurves="removeCurvesFromScene"></floorEntry>
+    <areaData v-if="areas" class="mt-2" v-bind:areas="areas" v-bind:floors="floors"></areaData>
 
   </div>
 
@@ -48,13 +48,33 @@ export default {
         THREE_Controller.zoomExtents();
       }
     },
-    setFloors(floors){
+    setFloors(floors) {
       const component = this;
       component.floors = floors;
     },
-    addFloorAreas(areas) {
+    addFloorsAndCurves(result) {
       const component = this;
+      const curves = result.curves;
+      const areas = result.areas;
       component.areas = areas;
+
+      if (component.model) component.model.curves = curves;
+      console.log('curves are here: ', curves);
+      if (curves) {
+        curves.forEach((curve) => {
+          THREE_Controller.addObjectToScene(curve.threeLine);
+        });
+        THREE_Controller.zoomExtents();
+      }
+    },
+    removeCurvesFromScene() {
+      const component = this;
+      console.log("removing? ")
+      component.model.curves.forEach((curve) => {
+        console.log("removing curve? ", curve);
+        THREE_Controller.removeObjectFromScene(curve.threeLine);
+      });
+      component.model.curves = [];
     }
   },
   created() {

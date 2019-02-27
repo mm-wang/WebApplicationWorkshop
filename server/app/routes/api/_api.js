@@ -51,7 +51,7 @@ router.post("/create-model", multerUpload.single("geo"), (req, res) => {
 		const array = new Uint8Array(data);
 		const initModel = rhino3dm.File3dm.fromByteArray(array);
 		const model = new RhinoModel(initModel);
-		console.log(model instanceof RhinoModel, unit);
+		// console.log(model instanceof RhinoModel, unit);
 		model.name = req.file.filename;
 		model.computeMeshes().then((computed) => {
 			try {
@@ -108,10 +108,28 @@ router.post("/slice-model", (req, res) => {
 	});
 
 	Promise.all(planes).then((result) => {
+		// console.log("hit a result: ", result);
 		const areas = result.map((each) => {
 			return each.Area;
 		});
-		return res.json(areas);
+		let curves = model.curves.map((each) => {
+			console.log("each curve: ", each);
+			if (each && each.geometry && each.geometry.data) return rhino3dm.CommonObject.decode(each.geometry);
+			else return each;
+		});
+		console.log("curves to use: ", curves);
+
+		try {
+			THREE_Parser.createThreeCurves(curves);
+		} catch (err) {
+			console.log("error in curves: ", err);
+			return res.status(500).send(err);
+		}
+
+		return res.json({
+			areas: areas,
+			curves: curves
+		});
 	})
 
 	// console.log(typeof model, model instanceof RhinoModel);

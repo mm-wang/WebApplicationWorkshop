@@ -85,11 +85,13 @@ const THREE_Controller = {
 		THREE_Controller.sceneExtents = extents;
 	},
 	addObjectToScene: (obj) => {
+		console.log("object to be added: ", obj);
 		const curObj = THREE_Controller.loader.parse(obj);
 		scene.add(curObj);
 		THREE_Controller.computeBoundingBox(curObj);
 	},
 	removeObjectFromScene: (obj) => {
+		console.log("object to be removed: ", obj);
 		scene.remove(obj);
 	},
 	computeBoundingBox: (obj) => {
