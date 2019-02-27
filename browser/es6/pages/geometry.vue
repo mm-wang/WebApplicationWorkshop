@@ -36,7 +36,7 @@ export default {
   methods: {
     addModelToScene(model) {
       const component = this;
-      console.log('model is here: ', model);
+      // console.log('model is here: ', model);
       component.model = model;
       THREE_Controller.resetScene();
       if (model && model.breps) {
@@ -59,7 +59,7 @@ export default {
       component.areas = areas;
 
       if (component.model) component.model.curves = curves;
-      console.log('curves are here: ', curves);
+      // console.log('curves are here: ', curves);
       if (curves) {
         curves.forEach((curve) => {
           THREE_Controller.addObjectToScene(curve.threeLine);
@@ -69,10 +69,11 @@ export default {
     },
     removeCurvesFromScene() {
       const component = this;
-      console.log("removing? ")
-      component.model.curves.forEach((curve) => {
-        console.log("removing curve? ", curve);
-        THREE_Controller.removeObjectFromScene(curve.threeLine);
+      let curves = THREE_Controller.sceneObjs.filter((each)=>{
+        return each.type === "Line";
+      });
+      curves.forEach((curve) => {
+        THREE_Controller.removeObjectFromScene(curve);
       });
       component.model.curves = [];
     }

@@ -113,11 +113,9 @@ router.post("/slice-model", (req, res) => {
 			return each.Area;
 		});
 		let curves = model.curves.map((each) => {
-			console.log("each curve: ", each);
 			if (each && each.geometry && each.geometry.data) return rhino3dm.CommonObject.decode(each.geometry);
 			else return each;
 		});
-		console.log("curves to use: ", curves);
 
 		try {
 			THREE_Parser.createThreeCurves(curves);

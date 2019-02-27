@@ -90,7 +90,7 @@ function createThreeCurves(curves) {
 }
 
 function curveToThreeJS(curve, material) {
-	console.log("curve ready for threejs: ", curve);
+	// console.log("curve ready for threejs: ", curve);
 	var geometry = new THREE.Geometry();
 	var domain = curve.domain;
 	var start = domain[0];

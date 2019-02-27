@@ -93,6 +93,8 @@ const THREE_Controller = {
 	removeObjectFromScene: (obj) => {
 		console.log("object to be removed: ", obj);
 		scene.remove(obj);
+		console.log("scene objectgs: ", THREE_Controller.sceneObjs);
+		renderer.render(scene, camera);
 	},
 	computeBoundingBox: (obj) => {
 		obj.geometry.computeBoundingBox();
