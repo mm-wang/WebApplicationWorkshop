@@ -10,16 +10,22 @@
           <span v-else>Not in bounds of massing</span></td>
       </tr>
     </table>
-    <button class="btn btn-primary btn-block" v-if="areas" v-on:click="saveData()">Save Data</button>
+    <button class="btn btn-primary btn-block" v-if="areas && !saved" v-on:click="saveData()">Save Data</button>
+    <span class="text-success" v-else>Saved!</span>
   </div>
 </div>
 </div>
 </template>
 <script>
 export default {
-  props: ["model","areas", "floors"],
+  props: ["model", "areas", "floors"],
+  data() {
+    return {
+      saved: false
+    }
+  },
   methods: {
-    saveData(){
+    saveData() {
       const component = this;
       const slices = {
         areas: component.areas,
@@ -38,7 +44,10 @@ export default {
         processData: false,
         method: 'POST',
         success: (response) => {
-          component.$emit("saved", response);
+          component.saved = (response === true);
+          setTimeout(() => {
+            component.saved = false;
+          }, 5000);
         }
       });
     }
