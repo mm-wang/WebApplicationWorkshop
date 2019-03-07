@@ -149,6 +149,7 @@ const THREE_Controller = {
 			THREE_Controller.sceneExtents.max.z);
 		const boxExtents = new THREE.Box3(minVector, maxVector);
 		THREE_Controller.setCameraPosition(boxExtents);
+		return boxExtents;
 	},
 	zoomToObject: (obj) => {
 		// obj.geometry.computeBoundingSphere();

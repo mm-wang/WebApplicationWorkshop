@@ -2,10 +2,12 @@
 <div class="row">
   <div id="three-container"></div>
   <div class="col-md-4 offset-md-8 pt-2">
-    <geometryUploader v-bind:model="model" v-on:parsedModel="addModelToScene"></geometryUploader>
-    <floorEntry class="mt-2" v-bind:model="model" v-on:enteredFloors="setFloors" v-on:slicedCurves="addFloorsAndCurves" v-on:clearCurves="removeCurvesFromScene"></floorEntry>
-    <areaData v-if="areas" class="mt-2" v-bind:areas="areas" v-bind:floors="floors"></areaData>
+    <button class="btn btn-outline-secondary btn-block" v-if="uploadNew" v-on:click="uploadNew=false;">Select Existing</button>
+    <button class="btn btn-outline-primary btn-block" v-else v-on:click="uploadNew=true;">Upload New</button>
 
+    <geometryUploader v-if="uploadNew" class="mt-2" v-bind:model="model" v-on:parsedModel="addModelToScene"></geometryUploader>
+    <floorEntry v-if="uploadNew" class="mt-2" v-bind:model="model" v-bind:bounds="bounds" v-on:enteredFloors="setFloors" v-on:slicedCurves="addFloorsAndCurves" v-on:clearCurves="removeCurvesFromScene"></floorEntry>
+    <areaData v-if="areas" class="mt-2" v-bind:model="model" v-bind:areas="areas" v-bind:floors="floors"></areaData>
   </div>
 
 </div>
@@ -23,9 +25,12 @@ import areaData from "../components/areaData.vue";
 export default {
   data() {
     return {
+      uploadNew: true,
       model: null,
       areas: null,
-      floors: null
+      floors: null,
+      bounds: null,
+      slices: null,
     }
   },
   components: {
@@ -45,7 +50,7 @@ export default {
             THREE_Controller.addObjectToScene(threeMesh);
           });
         });
-        THREE_Controller.zoomExtents();
+        component.bounds = THREE_Controller.zoomExtents();
       }
     },
     setFloors(floors) {
@@ -64,12 +69,12 @@ export default {
         curves.forEach((curve) => {
           THREE_Controller.addObjectToScene(curve.threeLine);
         });
-        THREE_Controller.zoomExtents();
+        component.bounds = THREE_Controller.zoomExtents();
       }
     },
     removeCurvesFromScene() {
       const component = this;
-      let curves = THREE_Controller.sceneObjs.filter((each)=>{
+      let curves = THREE_Controller.sceneObjs.filter((each) => {
         return each.type === "Line";
       });
       curves.forEach((curve) => {
@@ -83,8 +88,10 @@ export default {
     $.get("/api/retrieve-something").then((data) => {
       console.log(data);
     });
-
-    // processRhino();
+    $.get("/api/retrieve-slices").then((data) => {
+      component.slices = data;
+      console.log("retrieved slices: ", data);
+    });
   },
   mounted() {
     initThree();
