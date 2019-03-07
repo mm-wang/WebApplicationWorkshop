@@ -18,8 +18,7 @@ export default {
   props: ["model"],
   data() {
     return {
-      file: null,
-      reader: null
+      file: null
     }
   },
   methods: {
@@ -49,8 +48,7 @@ export default {
   },
   created(){
     const component = this;
-    //Initializing filereader for processing files sent here
-    component.reader = new FileReader();
+
   }
 }
 </script>
