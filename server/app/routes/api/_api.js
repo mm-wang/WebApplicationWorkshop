@@ -5,14 +5,6 @@ const RhinoModel = require("server/helpers/RhinoModel");
 const THREE_Parser = require("server/helpers/ThreeParser");
 module.exports = router;
 
-router.needleOpts = {
-	username: process.env.EMBER_USER,
-	password: process.env.EMBER_PASSWORD,
-	headers: {
-		connection: 'keep-alive'
-	}
-};
-
 /*
 Multer Configuration
  */

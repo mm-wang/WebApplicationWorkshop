@@ -1,8 +1,5 @@
-// const Promise = require('bluebird');
 const rhino3dm = require("rhino3dm")();
 let RhinoCompute = require("server/external/RhinoCompute");
-// let RhinoCompute = require("compute-rhino3d");
-// RhinoCompute.authToken = "bearer <token>" ;
 
 class RhinoModel {
 	constructor(model) {
@@ -10,7 +7,6 @@ class RhinoModel {
 		this.unit = null;
 		this.breps = model.breps || [];
 		this.curves = model.curves || [];
-		RhinoCompute.authToken = RhinoCompute.getAuthToken(true);
 		if (model && this.breps.length === 0) {
 			this.populate(model);
 		}
