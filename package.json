@@ -5,7 +5,8 @@
   "main": "server/start.js",
   "scripts": {
     "start": "nodemon --watch server -e js,html server/start.js",
-    "inspect": "nodemon --watch server -e js,html --inspect server/start.js"
+    "inspect": "nodemon --watch server -e js,html --inspect server/start.js",
+    "postinstall": "gulp build"
   },
   "repository": {
     "type": "git",
