@@ -1,6 +1,6 @@
 <template>
 <footer>
-  <div class="sticky-bottom container-fluid bg-light">
+  <div class="fixed-bottom container-fluid bg-light">
     <div class="float-right">
       <a href="http://core.thorntontomasetti.com">
         <img class="logo" src="https://s3-us-west-2.amazonaws.com/core-weblibrary/libraries/core-logo.png" />

@@ -24,9 +24,7 @@ THREEJS Container Styling
 /*
 Footer Styling
  */
-.sticky-bottom {
-    position: absolute;
-    bottom: 0;
+.fixed-bottom {
     height: auto;
     line-height: $footer-height;
 }
