@@ -29,13 +29,13 @@ Routes
  */
 // Example route returning what you see using rhino3dm
 router.get("/retrieve-something", (req, res) => {
-	fs.readFile("3dm/box.3dm", (err, data) => {
-		let sphere = new rhino3dm.Sphere([1, 2, 3], 12);
-		return res.json({
-			buffer: data,
-			sphere: sphere
-		});
+	// fs.readFile("3dm/box.3dm", (err, data) => {
+	let sphere = new rhino3dm.Sphere([1, 2, 3], 12);
+	return res.json({
+		buffer: data,
+		sphere: sphere
 	});
+	// });
 });
 
 router.get("/retrieve-slices", (req, res) => {
@@ -141,7 +141,9 @@ router.post("/save-slices", (req, res) => {
 
 // Delete slices in the database;
 router.delete("/delete-slice", (req, res) => {
-	Slice.deleteOne({_id: req.body._id}, (err, results) => {
+	Slice.deleteOne({
+		_id: req.body._id
+	}, (err, results) => {
 		if (!err) return res.status(200).send(true);
 		else return res.status(500).send(err);
 	});
