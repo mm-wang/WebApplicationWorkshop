@@ -32,7 +32,6 @@ router.get("/retrieve-something", (req, res) => {
 	// fs.readFile("3dm/box.3dm", (err, data) => {
 	let sphere = new rhino3dm.Sphere([1, 2, 3], 12);
 	return res.json({
-		buffer: data,
 		sphere: sphere
 	});
 	// });
