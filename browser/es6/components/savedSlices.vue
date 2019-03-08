@@ -16,7 +16,6 @@
       </tr>
     </table>
     <span v-else class="text-info mt-2">No slices saved, try uploading geometry and entering some elevations!</span>
-    <!-- <button class="btn btn-primary btn-block" v-if="areas && !saved" v-on:click="saveData()">Save Data</button> -->
   </div>
 </div>
 </div>

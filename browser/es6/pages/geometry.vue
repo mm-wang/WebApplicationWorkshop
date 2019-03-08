@@ -6,8 +6,8 @@
     <button class="btn btn-outline-primary btn-block" v-else v-on:click="reset(true)">Upload New</button>
 
     <geometryUploader v-if="uploadNew" class="mt-2" v-bind:model="model" v-on:parsedModel="addModelToScene"></geometryUploader>
-    <floorEntry v-if="uploadNew" class="mt-2" v-bind:model="model" v-bind:bounds="bounds" v-on:enteredFloors="setFloors" v-on:slicedCurves="addFloorsAndCurves" v-on:clearCurves="removeCurvesFromScene"></floorEntry>
-    <savedSlices v-if="!uploadNew" class="mt-2" v-on:selectedSlice="addModelFloorsCurves"></savedSlices>
+    <savedSlices v-else class="mt-2" v-on:selectedSlice="addSelectedSaved"></savedSlices>
+    <floorEntry v-if="model" class="mt-2" v-bind:model="model" v-bind:bounds="bounds" v-on:enteredFloors="setFloors" v-on:slicedCurves="addFloorsAndCurves" v-on:clearCurves="removeCurvesFromScene"></floorEntry>
     <areaData v-if="areas" class="mt-2" v-bind:model="model" v-bind:areas="areas" v-bind:floors="floors" v-bind:saved="saved"></areaData>
   </div>
 
@@ -33,6 +33,7 @@ export default {
       floors: null,
       bounds: null,
       slices: null,
+      saved: false,
     }
   },
   components: {
@@ -42,28 +43,40 @@ export default {
     savedSlices
   },
   methods: {
-    reset(newUpload){
+    reset(newUpload) {
       const component = this;
       component.uploadNew = newUpload;
       component.saved = !newUpload;
       component.areas = null;
+      component.model = null;
+      component.floors = null;
+      THREE_Controller.resetScene();
     },
     addModelToScene(model) {
       const component = this;
       // console.log('model is here: ', model);
       component.model = model;
       THREE_Controller.resetScene();
-      if (model && model.breps) {
-        model.breps.forEach((brep) => {
-          brep.threeMeshes.forEach((threeMesh) => {
-            THREE_Controller.addObjectToScene(threeMesh);
+      if (model) {
+        if (model.breps) {
+          model.breps.forEach((brep) => {
+            brep.threeMeshes.forEach((threeMesh) => {
+              THREE_Controller.addObjectToScene(threeMesh);
+            });
           });
-        });
+        }
+        if (model.curves) {
+          model.curves.forEach((curve) => {
+            THREE_Controller.addObjectToScene(curve.threeLine);
+          });
+        }
         component.bounds = THREE_Controller.zoomExtents();
       }
+
     },
     setFloors(floors) {
       const component = this;
+      component.saved = false;
       component.floors = floors;
     },
     addFloorsAndCurves(result) {
@@ -91,12 +104,14 @@ export default {
       });
       component.model.curves = [];
     },
-    addModelFloorsCurves(slice){
+    addSelectedSaved(slice) {
       const component = this;
+      component.saved = true; // already a saved model that we're adding;
       component.model = slice.model;
       component.areas = slice.slices.areas;
       component.floors = slice.slices.floors;
-      console.log("have floors and curves and model? ", slice, component.model, component.floors);
+
+      component.addModelToScene(component.model);
     }
   },
   created() {
