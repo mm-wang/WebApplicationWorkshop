@@ -4,14 +4,16 @@
     <h4 class="card-title">Enter Floor Elevations</h4>
     <h6 class="card-subtitle text-muted">Enter values based on the document units</h6>
     <span v-if="!valid" class="text-danger">That is an invalid key, please change it</span>
-    <span v-else class="text-muted">Enter numbers separated by commas</span>
+    <span v-else class="text-muted">Enter numbers separated by commas.
+      <span v-if="maxEl"><br>The max elevation is {{maxEl}}.</span>
+    </span>
     <div class="input-group mt-2">
       <div class="input-group-prepend">
         <span class="input-group-text">Floors</span>
       </div>
       <input type="text" class="form-control" placeholder="Start from base" v-model="floors" v-on:keydown="checkDelimiter($event)" />
       <div class="input-group-append">
-        <button class="btn btn-outline-primary" type="button" v-on:click="getAreas">Get Areas</button>
+        <button class="btn btn-primary" type="button" v-on:click="getAreas">Get Areas</button>
       </div>
     </div>
   </div>
@@ -20,11 +22,19 @@
 </template>
 <script>
 export default {
-  props: ["model"],
+  props: ["model", "bounds"],
   data: () => {
     return {
       floors: null,
       valid: true,
+    }
+  },
+  computed: {
+    maxEl: function() {
+      const component = this;
+      let el = component.bounds && component.bounds.max && component.bounds.max.z ? Math.round(component.bounds.max.z, 0.1) : null;
+      console.log("el: ", el, component.bounds);
+      return el;
     }
   },
   methods: {

@@ -3,15 +3,8 @@ const fs = require("fs");
 const rhino3dm = require("rhino3dm")();
 const RhinoModel = require("server/helpers/RhinoModel");
 const THREE_Parser = require("server/helpers/ThreeParser");
+const Slice = require("server/db/Slice");
 module.exports = router;
-
-router.needleOpts = {
-	username: process.env.EMBER_USER,
-	password: process.env.EMBER_PASSWORD,
-	headers: {
-		connection: 'keep-alive'
-	}
-};
 
 /*
 Multer Configuration
@@ -36,12 +29,19 @@ Routes
  */
 // Example route returning what you see using rhino3dm
 router.get("/retrieve-something", (req, res) => {
-	fs.readFile("3dm/massing_core_2.3dm", (err, data) => {
+	fs.readFile("3dm/box.3dm", (err, data) => {
 		let sphere = new rhino3dm.Sphere([1, 2, 3], 12);
 		return res.json({
 			buffer: data,
 			sphere: sphere
 		});
+	});
+});
+
+router.get("/retrieve-slices", (req, res) => {
+	Slice.find({}).then((results) => {
+		console.log("found slices: ", results);
+		return res.json(results);
 	});
 });
 
@@ -108,7 +108,6 @@ router.post("/slice-model", (req, res) => {
 	});
 
 	Promise.all(planes).then((result) => {
-		// console.log("hit a result: ", result);
 		const areas = result.map((each) => {
 			return each.Area;
 		});
@@ -128,10 +127,22 @@ router.post("/slice-model", (req, res) => {
 			areas: areas,
 			curves: curves
 		});
-	})
+	});
+});
 
-	// console.log(typeof model, model instanceof RhinoModel);
-	// model.computeIntersection(plane).then((computed) => {
-	// 	return res.json(computed);
-	// });
-})
+// Save your slices to the database;
+router.post("/save-slices", (req, res) => {
+	let slice = new Slice(req.body);
+	slice.save((err, saved) => {
+		if (!err) return res.status(200).send(true);
+		else return res.status(500).send(err);
+	});
+});
+
+// Delete slices in the database;
+router.delete("/delete-slice", (req, res) => {
+	Slice.deleteOne({_id: req.body._id}, (err, results) => {
+		if (!err) return res.status(200).send(true);
+		else return res.status(500).send(err);
+	});
+});
