@@ -18,10 +18,10 @@
 </template>
 <script>
 export default {
-  props: ["model", "areas", "floors"],
+  props: ["model", "areas", "floors", "saved"],
   data() {
     return {
-      saved: false
+      // saved: false
     }
   },
   methods: {

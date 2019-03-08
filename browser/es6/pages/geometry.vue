@@ -2,12 +2,13 @@
 <div class="row">
   <div id="three-container"></div>
   <div class="col-md-4 offset-md-8 pt-2">
-    <button class="btn btn-outline-secondary btn-block" v-if="uploadNew" v-on:click="uploadNew=false;">Select Existing</button>
-    <button class="btn btn-outline-primary btn-block" v-else v-on:click="uploadNew=true;">Upload New</button>
+    <button class="btn btn-outline-secondary btn-block" v-if="uploadNew" v-on:click="reset(false)">Select Saved</button>
+    <button class="btn btn-outline-primary btn-block" v-else v-on:click="reset(true)">Upload New</button>
 
     <geometryUploader v-if="uploadNew" class="mt-2" v-bind:model="model" v-on:parsedModel="addModelToScene"></geometryUploader>
     <floorEntry v-if="uploadNew" class="mt-2" v-bind:model="model" v-bind:bounds="bounds" v-on:enteredFloors="setFloors" v-on:slicedCurves="addFloorsAndCurves" v-on:clearCurves="removeCurvesFromScene"></floorEntry>
-    <areaData v-if="areas" class="mt-2" v-bind:model="model" v-bind:areas="areas" v-bind:floors="floors"></areaData>
+    <savedSlices v-if="!uploadNew" class="mt-2" v-on:selectedSlice="addModelFloorsCurves"></savedSlices>
+    <areaData v-if="areas" class="mt-2" v-bind:model="model" v-bind:areas="areas" v-bind:floors="floors" v-bind:saved="saved"></areaData>
   </div>
 
 </div>
@@ -21,6 +22,7 @@ import {
 import geometryUploader from "../components/geometryUploader.vue";
 import floorEntry from "../components/floorEntry.vue";
 import areaData from "../components/areaData.vue";
+import savedSlices from "../components/savedSlices.vue";
 
 export default {
   data() {
@@ -36,9 +38,16 @@ export default {
   components: {
     geometryUploader,
     floorEntry,
-    areaData
+    areaData,
+    savedSlices
   },
   methods: {
+    reset(newUpload){
+      const component = this;
+      component.uploadNew = newUpload;
+      component.saved = !newUpload;
+      component.areas = null;
+    },
     addModelToScene(model) {
       const component = this;
       // console.log('model is here: ', model);
@@ -81,6 +90,13 @@ export default {
         THREE_Controller.removeObjectFromScene(curve);
       });
       component.model.curves = [];
+    },
+    addModelFloorsCurves(slice){
+      const component = this;
+      component.model = slice.model;
+      component.areas = slice.slices.areas;
+      component.floors = slice.slices.floors;
+      console.log("have floors and curves and model? ", slice, component.model, component.floors);
     }
   },
   created() {
@@ -88,10 +104,7 @@ export default {
     $.get("/api/retrieve-something").then((data) => {
       console.log(data);
     });
-    $.get("/api/retrieve-slices").then((data) => {
-      component.slices = data;
-      console.log("retrieved slices: ", data);
-    });
+
   },
   mounted() {
     initThree();
