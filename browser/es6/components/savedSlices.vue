@@ -7,12 +7,13 @@
       <tr>
         <th>Filename</th>
         <th>Sum of Areas</th>
-        <th>Elevations</th>
+        <th colspan="2">Elevations</th>
       </tr>
-      <tr v-for="(slice, i) in sliceAreaFloors" v-on:click="selectSlice(i)">
+      <tr v-for="(slice, i) in sliceAreaFloors">
         <td>{{slice.name}}</td>
         <td>{{slice.areas}}</td>
         <td>{{slice.floors}}</td>
+        <td><button class="btn btn-sm btn-primary mr-1" v-on:click="selectSlice(i)">Select</button><button class="btn btn-sm btn-danger" v-on:click="deleteSlice(i)">Delete</button></td>
       </tr>
     </table>
     <span v-else class="text-info mt-2">No slices saved, try uploading geometry and entering some elevations!</span>
@@ -36,20 +37,43 @@ export default {
         let areas = each.slices && each.slices.areas && each.slices.areas.reduce((sum, area) => {
           return sum += area;
         }, 0);
-        areas = Math.round(areas*10)/10;
+        areas = Math.round(areas * 10) / 10;
         const floors = each.slices && each.slices.floors && each.slices.floors.map((floor) => {
           return +floor;
         });
-        sliceAreaFloors.push({name, areas, floors});
+        sliceAreaFloors.push({
+          name,
+          areas,
+          floors
+        });
       });
       return sliceAreaFloors;
     }
   },
   methods: {
-    selectSlice(index){
+    selectSlice(index) {
       const component = this;
       console.log("select i: ", index);
       component.$emit("selectedSlice", component.slices[index]);
+    },
+    deleteSlice(index) {
+      const component = this;
+      const data = {
+        _id: component.slices[index]._id
+      };
+      $.ajax({
+        url: '/api/delete-slice',
+        data: JSON.stringify(data),
+        cache: false,
+        contentType: "application/json",
+        processData: false,
+        method: 'DELETE',
+        success: (response) => {
+          if (response === true) {
+            component.slices.splice(index, 1);
+          }
+        }
+      });
     }
   },
   created() {

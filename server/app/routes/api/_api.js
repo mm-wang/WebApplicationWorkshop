@@ -130,11 +130,19 @@ router.post("/slice-model", (req, res) => {
 	});
 });
 
+// Save your slices to the database;
 router.post("/save-slices", (req, res) => {
-	console.log("in save slices: ", req.body);
 	let slice = new Slice(req.body);
 	slice.save((err, saved) => {
 		if (!err) return res.status(200).send(true);
 		else return res.status(500).send(err);
 	});
-})
+});
+
+// Delete slices in the database;
+router.delete("/delete-slice", (req, res) => {
+	Slice.deleteOne({_id: req.body._id}, (err, results) => {
+		if (!err) return res.status(200).send(true);
+		else return res.status(500).send(err);
+	});
+});
