@@ -3,7 +3,7 @@
   <div class="card-body">
     <h4 class="card-title">Saved Slices</h4>
     <h6 class="card-subtitle text-muted">Saved slices from database</h6>
-    <table class="table table-sm mt-2" v-if="sliceAreaFloors">
+    <table class="table table-sm mt-2" v-if="sliceAreaFloors.length">
       <tr>
         <th>Filename</th>
         <th>Sum of Areas</th>
@@ -15,6 +15,7 @@
         <td>{{slice.floors}}</td>
       </tr>
     </table>
+    <span v-else class="text-info mt-2">No slices saved, try uploading geometry and entering some elevations!</span>
     <!-- <button class="btn btn-primary btn-block" v-if="areas && !saved" v-on:click="saveData()">Save Data</button> -->
   </div>
 </div>

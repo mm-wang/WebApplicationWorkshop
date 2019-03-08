@@ -45,9 +45,9 @@ export default {
         method: 'POST',
         success: (response) => {
           component.saved = (response === true);
-          setTimeout(() => {
-            component.saved = false;
-          }, 5000);
+          // setTimeout(() => {
+          //   component.saved = false;
+          // }, 5000);
         }
       });
     }
