@@ -5,7 +5,8 @@
   "main": "server/start.js",
   "scripts": {
     "start": "nodemon --watch server -e js,html server/start.js",
-    "inspect": "nodemon --watch server -e js,html --inspect server/start.js"
+    "inspect": "nodemon --watch server -e js,html --inspect server/start.js",
+    "postinstall": "gulp build"
   },
   "repository": {
     "type": "git",
@@ -35,6 +36,7 @@
     "jsonwebtoken": "^8.4.0",
     "moment": "^2.24.0",
     "mongoose": "^5.4.7",
+    "multer": "^1.4.1",
     "nodemon": "^1.18.9",
     "passport": "^0.4.0",
     "popper.js": "^1.14.7",
@@ -61,7 +63,6 @@
     "gulp-plumber": "^1.2.1",
     "gulp-sass": "^4.0.2",
     "gulp-sourcemaps": "^2.6.4",
-    "multer": "^1.4.1",
     "rollup": "^1.1.2",
     "rollup-plugin-babel": "^4.3.2",
     "rollup-plugin-cleanup": "^3.1.1",
