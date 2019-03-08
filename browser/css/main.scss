@@ -21,6 +21,10 @@ THREEJS Container Styling
   right: 0;
 }
 
+#main-content {
+  margin-bottom: $footer-height + $grid-gutter-width/4;
+}
+
 /*
 Footer Styling
  */
