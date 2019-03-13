@@ -6,9 +6,11 @@ $logo-height: $footer-height/3;
 
 @import "../../node_modules/bootstrap/scss/bootstrap";
 
-.sticky-bottom {
-    position: absolute;
-    bottom: 0;
+#main-content {
+  margin-bottom: $footer-height + $grid-gutter-width/4;
+}
+
+.fixed-bottom {
     height: auto;
     line-height: $footer-height;
 }
