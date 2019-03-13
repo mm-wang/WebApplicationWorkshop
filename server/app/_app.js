@@ -22,15 +22,34 @@ module.exports = function(app, port) {
 	}));
 
 	//Middleware to use session
-	app.use(session({
+	//Middleware to use session
+	let sessionData = {
 		secret: process.env.SESSION_SECRET,
 		resave: true,
-		saveUninitialized: true,
-		store: new MongoStore({
+		saveUninitialized: true
+	};
+
+	if (typeof(process.env.DATABASE_URI) !== "undefined") {
+		sessionData.store = new MongoStore({
 			url: process.env.DATABASE_URI,
 			autoReconnect: true
-		})
-	}));
+		});
+	}
+
+	app.use(session(sessionData));
+
+	// Redirect to HTTPS
+	if (process.env.HTTPS === true || process.env.HTTPS == "true") {
+		console.log(chalk.magenta('Using HTTPS'));
+		app.use(function requireHTTPS(req, res, next) {
+			// Insecure request?
+			if (req.get('x-forwarded-proto') == 'http') {
+				// Redirect to https://
+				return res.redirect('https://' + req.get('host') + req.url);
+			}
+			next();
+		});
+	}
 
 	// Redirect to HTTPS
 	if (process.env.HTTPS === true || process.env.HTTPS == "true") {
