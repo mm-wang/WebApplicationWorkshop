@@ -25,15 +25,20 @@ module.exports = function(app, port) {
 	}));
 
 	//Middleware to use session
-	app.use(session({
+	let sessionData = {
 		secret: process.env.SESSION_SECRET,
 		resave: true,
-		saveUninitialized: true,
-		store: new MongoStore({
+		saveUninitialized: true
+	};
+
+	if (typeof(process.env.DATABASE_URI) !== "undefined") {
+		sessionData.store = new MongoStore({
 			url: process.env.DATABASE_URI,
 			autoReconnect: true
-		})
-	}));
+		});
+	}
+
+	app.use(session(sessionData));
 
 	// Redirect to HTTPS
 	if (process.env.HTTPS === true || process.env.HTTPS == "true") {
