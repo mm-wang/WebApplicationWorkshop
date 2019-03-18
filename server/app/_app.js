@@ -22,7 +22,6 @@ module.exports = function(app, port) {
 	}));
 
 	//Middleware to use session
-	//Middleware to use session
 	let sessionData = {
 		secret: process.env.SESSION_SECRET,
 		resave: true,
