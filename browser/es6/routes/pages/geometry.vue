@@ -7,5 +7,12 @@
 </template>
 
 <script>
-export default {}
+export default {
+  created(){
+    const component = this;
+    $.get("/api/retrieve-something").then((data) => {
+      console.log(data);
+    });
+  }
+}
 </script>
