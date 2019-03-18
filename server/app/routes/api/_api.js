@@ -28,12 +28,9 @@ Routes
  */
 // Example route returning what you see using rhino3dm
 router.get("/retrieve-something", (req, res) => {
-	fs.readFile("3dm/massing_core_2.3dm", (err, data) => {
-		let sphere = new rhino3dm.Sphere([1, 2, 3], 12);
-		return res.json({
-			buffer: data,
-			sphere: sphere
-		});
+	let sphere = new rhino3dm.Sphere([1, 2, 3], 12);
+	return res.json({
+		sphere: sphere
 	});
 });
 
@@ -43,7 +40,6 @@ router.post("/create-model", multerUpload.single("geo"), (req, res) => {
 		const array = new Uint8Array(data);
 		const initModel = rhino3dm.File3dm.fromByteArray(array);
 		const model = new RhinoModel(initModel);
-		// console.log(model instanceof RhinoModel, unit);
 		model.name = req.file.filename;
 		model.computeMeshes().then((computed) => {
 			try {
