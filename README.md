@@ -1,5 +1,5 @@
 # WebApplicationWorkshop
-Web application workshop test
+Web application workshop for AEC Tech 2019: Seattle
 
 ![Application](https://raw.githubusercontent.com/mm-wang/WebApplicationWorkshop/master/assets/main.png)
 
