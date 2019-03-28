@@ -29,17 +29,15 @@ Routes
  */
 // Example route returning what you see using rhino3dm
 router.get("/retrieve-something", (req, res) => {
-	// fs.readFile("3dm/box.3dm", (err, data) => {
 	let sphere = new rhino3dm.Sphere([1, 2, 3], 12);
 	return res.json({
 		sphere: sphere
 	});
-	// });
 });
 
+// Retrieving all the slices from the database
 router.get("/retrieve-slices", (req, res) => {
 	Slice.find({}).then((results) => {
-		console.log("found slices: ", results);
 		return res.json(results);
 	});
 });
@@ -50,7 +48,6 @@ router.post("/create-model", multerUpload.single("geo"), (req, res) => {
 		const array = new Uint8Array(data);
 		const initModel = rhino3dm.File3dm.fromByteArray(array);
 		const model = new RhinoModel(initModel);
-		// console.log(model instanceof RhinoModel, unit);
 		model.name = req.file.filename;
 		model.computeMeshes().then((computed) => {
 			try {
@@ -65,7 +62,6 @@ router.post("/create-model", multerUpload.single("geo"), (req, res) => {
 
 // Slice a Rhino model using the floors
 router.post("/slice-model", (req, res) => {
-	// console.log("in slice model", req.body);
 	if (!req.body.model) return res.status(406).send("No model provided");
 	const model = new RhinoModel(req.body.model);
 	const plane = {
