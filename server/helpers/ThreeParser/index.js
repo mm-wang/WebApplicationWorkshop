@@ -1,5 +1,9 @@
 const THREE = require("three");
 
+/**
+ * Options for the generation of meshes and lines in THREEjs
+ * @type {Object}
+ */
 const THREE_Options = {
 	meshMaterial: new THREE.MeshNormalMaterial({
 		opacity: 0.6
@@ -81,6 +85,11 @@ function meshToThreeJS(mesh, material) {
 	return new THREE.Mesh(geometry, material);
 }
 
+/**
+ * Iterate through all of the curves in the model and create a THREEjs line from
+ * the line geometry and the line material specified in the options
+ * @param  {[Object]} curves array of curves from the model
+ */
 function createThreeCurves(curves) {
 	for (curveindex = 0; curveindex < curves.length; curveindex++) {
 		curve = curves[curveindex].geometry;
@@ -89,6 +98,11 @@ function createThreeCurves(curves) {
 	}
 }
 
+/**
+ * With a curve description and a material, creates a THREEjs line
+ * @param  {Object} curve    curve as taken from the model
+ * @param  {Object} material material as described by the options
+ */
 function curveToThreeJS(curve, material) {
 	var geometry = new THREE.Geometry();
 	var domain = curve.domain;
