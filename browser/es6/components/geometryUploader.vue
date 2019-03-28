@@ -12,8 +12,6 @@
 </div>
 </template>
 <script>
-import * as utilities from "../utilities/utilities";
-
 export default {
   props: ["model"],
   data() {
@@ -25,7 +23,6 @@ export default {
     fileUploaded(files) {
       const component = this;
       component.file = component.$refs.myGeoFile.files[0];
-      // let form = component.$refs.myGeoForm;
       if (!component.file) return;
       let formData = new FormData($("form#geo-upload")); //empty
       formData.append("geo", component.file);
@@ -46,7 +43,7 @@ export default {
       });
     }
   },
-  created(){
+  created() {
     const component = this;
 
   }
