@@ -1,16 +1,27 @@
 const rhino3dm = require("rhino3dm")();
 let RhinoCompute = require("server/external/RhinoCompute");
 
+/**
+ * A data structure for the contents of a file to create a 3d visualization
+ * using Rhino geometry
+ */
 class RhinoModel {
+	/**
+	 * Constructing this model
+	 * @param {File3dm} model Rhino file containing massing representation
+	 */
 	constructor(model) {
 		this.model = model;
-		this.unit = null;
 		this.breps = model.breps || [];
 		this.curves = model.curves || [];
 		if (model && this.breps.length === 0) {
 			this.populate(model);
 		}
 	}
+	/**
+	 * Populates the model based on the geometry coming in
+	 * @param  {File3dm} model Rhino file containing massing representation
+	 */
 	populate(model) {
 		var objectTable = model.objects();
 		for (var i = 0; i < objectTable.count; i++) {
@@ -26,7 +37,10 @@ class RhinoModel {
 			}
 		}
 	}
-
+	/**
+	 * Push a brep to the instance breps
+	 * @param  {File3dmObject} obj Model object from File3dm
+	 */
 	pushBrep(obj) {
 		let instance = this;
 		instance.breps.push({
@@ -37,6 +51,10 @@ class RhinoModel {
 		});
 	}
 
+	/**
+	 * Push a curve to the instance curves
+	 * @param  {Polycurve} obj Curve object
+	 */
 	pushCurve(obj) {
 		let instance = this;
 		instance.curves.push({
@@ -45,11 +63,25 @@ class RhinoModel {
 		});
 	}
 
+	/**
+	 * Compute the intersections between a plane and the breps,
+	 * returning the resultant areas and curves
+	 * @param  {Plane} plane 				Horizontal plane at an elevation, has origin and X, Y, Z axes
+	 * @return {AreaMassProperties}	Areas, centroid, moments, etc. of the intersected curves
+	 */
 	computeIntersection(plane) {
 		const rM = this;
+		/**
+		 * Translate the breps
+		 */
 		const breps = rM.breps.map((each) => {
 			return rhino3dm.CommonObject.decode(each.geometry);
 		});
+
+		/**
+		 * Intersects the first brep with the horizontal planes at the elevations,
+		 * then computes the intersecting curve area
+		 */
 		return RhinoCompute.Intersection.brepPlane(breps[0], plane, 0.01)
 			.then((result) => {
 				const intersection = result.reduce((intersect, r) => {
