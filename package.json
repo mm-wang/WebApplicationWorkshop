@@ -12,6 +12,9 @@
     "type": "git",
     "url": "git+https://github.com/mm-wang/WebApplicationWorkshop.git"
   },
+  "engines": {
+    "node": ">=12.0.0"
+  },
   "keywords": [
     "web",
     "application"
